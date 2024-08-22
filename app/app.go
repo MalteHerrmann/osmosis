@@ -19,6 +19,10 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/evmos/evmos/v19/x/evm"
+	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
+	"github.com/evmos/evmos/v19/x/feemarket"
+	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
 	"github.com/skip-mev/block-sdk/v2/block"
 	"github.com/skip-mev/block-sdk/v2/block/base"
 
@@ -337,6 +341,11 @@ func NewOsmosisApp(
 		ibcWasmConfig,
 	)
 
+	app.InitEvmOSKeepers(
+		appCodec,
+		appOpts,
+	)
+
 	sqsConfig := sqs.NewConfigFromOptions(appOpts)
 
 	streamingServices := []storetypes.ABCIListener{}
@@ -540,6 +549,10 @@ func NewOsmosisApp(
 		wasm.NewAppModule(appCodec, app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		ibc.NewAppModule(app.IBCKeeper),
 		transfer.NewAppModule(*app.TransferKeeper),
+
+		// TODO: (@MalteHerrmann): add evmOS modules here and check if it works as expected
+		evm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName)),
+		feemarket.NewAppModule(app.FeemarketKeeper, app.GetSubspace(feemarkettypes.ModuleName)),
 	)
 
 	app.sm.RegisterStoreDecoders()
