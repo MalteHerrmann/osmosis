@@ -331,4 +331,7 @@ replace (
 	// https://github.com/MalteHerrmann/cosmos-sdk/tree/osmo-sdkv50-evmOS-wip
 	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
+
+	// local building
+	github.com/evmos/os => ../../evmos/os
 )

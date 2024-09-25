@@ -160,10 +160,11 @@ import (
 	txfeesclient "github.com/osmosis-labs/osmosis/v25/x/txfees/client"
 
 	// evmOS modules
+	evmosserverflags "github.com/evmos/os/server/flags"
 	"github.com/evmos/os/x/evm"
 	evmtypes "github.com/evmos/os/x/evm/types"
-	"github.com/evmos/os/x/feemarket"
-	feemarkettypes "github.com/evmos/os/x/feemarket/types"
+	evmosfeemarket "github.com/evmos/os/x/feemarket"
+	evmosfeemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 const appName = "OsmosisApp"
@@ -554,7 +555,7 @@ func NewOsmosisApp(
 
 		// TODO: (@MalteHerrmann): add evmOS modules here and check if it works as expected
 		evm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName)),
-		feemarket.NewAppModule(app.FeemarketKeeper, app.GetSubspace(feemarkettypes.ModuleName)),
+		evmosfeemarket.NewAppModule(app.FeemarketKeeper, app.GetSubspace(evmosfeemarkettypes.ModuleName)),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -585,7 +586,11 @@ func NewOsmosisApp(
 	app.MountTransientStores(app.GetTransientStoreKey())
 	app.MountMemoryStores(app.GetMemoryStoreKey())
 
-	anteHandler := NewAnteHandler(
+	maxGasWanted := cast.ToUint64(appOpts.Get(evmosserverflags.EVMMaxTxGasWanted))
+
+	// instantiate the settings for the ante handlers
+	options := NewHandlerOptions(
+		// Osmosis ante handler options
 		appOpts,
 		wasmConfig,
 		runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
@@ -603,7 +608,17 @@ func NewOsmosisApp(
 			txConfig:      txConfig,
 		},
 		appCodec,
+		// evmOS ante handler options
+		app.EVMKeeper,
+		app.FeemarketKeeper,
+		maxGasWanted,
 	)
+
+	if err := options.Validate(); err != nil {
+		panic(fmt.Sprintf("failed to validate ante handler options: %v", err))
+	}
+
+	anteHandler := NewAnteHandler(options)
 
 	// update ante-handlers on lanes
 	opt := []base.LaneOption{
