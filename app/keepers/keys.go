@@ -9,8 +9,8 @@ import (
 	protorevtypes "github.com/osmosis-labs/osmosis/v25/x/protorev/types"
 	twaptypes "github.com/osmosis-labs/osmosis/v25/x/twap/types"
 
-	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
-	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 // GenerateKeys generates new keys (KV Store, Transient store, and memory store).

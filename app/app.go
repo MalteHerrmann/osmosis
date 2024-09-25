@@ -19,10 +19,6 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	"github.com/evmos/evmos/v19/x/evm"
-	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
-	"github.com/evmos/evmos/v19/x/feemarket"
-	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
 	"github.com/skip-mev/block-sdk/v2/block"
 	"github.com/skip-mev/block-sdk/v2/block/base"
 
@@ -162,6 +158,12 @@ import (
 	poolmanagerclient "github.com/osmosis-labs/osmosis/v25/x/poolmanager/client"
 	superfluidclient "github.com/osmosis-labs/osmosis/v25/x/superfluid/client"
 	txfeesclient "github.com/osmosis-labs/osmosis/v25/x/txfees/client"
+
+	// evmOS modules
+	"github.com/evmos/os/x/evm"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	"github.com/evmos/os/x/feemarket"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 const appName = "OsmosisApp"

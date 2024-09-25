@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	evmosutils "github.com/evmos/evmos/v19/utils"
-	"github.com/evmos/evmos/v19/x/evm/core/vm"
-	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
+	evmosutils "github.com/evmos/os/utils"
+	"github.com/evmos/os/x/evm/core/vm"
+	evmtypes "github.com/evmos/os/x/evm/types"
 )
 
 // BlockedAddrs returns all the app's addresses that are not

@@ -123,12 +123,12 @@ import (
 	storetypes "cosmossdk.io/store/types"
 
 	// evmOS imports
-	evmossrvflags "github.com/evmos/evmos/v19/server/flags"
-	evmoscorevm "github.com/evmos/evmos/v19/x/evm/core/vm"
-	evmkeeper "github.com/evmos/evmos/v19/x/evm/keeper"
-	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
-	feemarketkeeper "github.com/evmos/evmos/v19/x/feemarket/keeper"
-	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
+	evmossrvflags "github.com/evmos/os/server/flags"
+	evmoscorevm "github.com/evmos/os/x/evm/core/vm"
+	evmkeeper "github.com/evmos/os/x/evm/keeper"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	feemarketkeeper "github.com/evmos/os/x/feemarket/keeper"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 const (

@@ -110,10 +110,10 @@ import (
 	epochstypes "github.com/osmosis-labs/osmosis/x/epochs/types"
 
 	// evmOS imports
-	"github.com/evmos/evmos/v19/x/evm"
-	evmtypes "github.com/evmos/evmos/v19/x/evm/types"
-	"github.com/evmos/evmos/v19/x/feemarket"
-	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
+	"github.com/evmos/os/x/evm"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	"github.com/evmos/os/x/feemarket"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 // moduleAccountPermissions defines module account permissions
