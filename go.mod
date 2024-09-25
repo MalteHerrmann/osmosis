@@ -327,6 +327,9 @@ exclude github.com/gogo/protobuf v1.3.3
 
 // evmOS replacements
 replace (
+	// required because it's using the CacheMultiStore.Copy() method which is not available in the original
+	github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.50.1-0.20240925153347-c4a52206eaf9
+
 	// Point to the latest commit on the `osmo-sdkv50-evmOS-wip` branch
 	// https://github.com/MalteHerrmann/cosmos-sdk/tree/osmo-sdkv50-evmOS-wip
 	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
