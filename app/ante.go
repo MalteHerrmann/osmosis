@@ -31,8 +31,10 @@ import (
 
 	auctionante "github.com/skip-mev/block-sdk/v2/x/auction/ante"
 
+	evmoscosmosante "github.com/evmos/os/ante/cosmos"
 	evmosevmante "github.com/evmos/os/ante/evm"
 	evmkeeper "github.com/evmos/os/x/evm/keeper"
+	evmtypes "github.com/evmos/os/x/evm/types"
 	feemarketkeeper "github.com/evmos/os/x/feemarket/keeper"
 )
 
@@ -165,6 +167,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 				case "/os.types.v1.ExtensionOptionDynamicFeeTx":
 					// cosmos-sdk tx with dynamic fee extension
 					anteHandler = NewCosmosAnteHandler(options)
+				// TODO: check with Paddy which extensions are supported on Osmosis
 				default:
 					return ctx, errorsmod.Wrapf(
 						errortypes.ErrUnknownExtensionOptions,
@@ -237,10 +240,16 @@ func NewCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	)
 
 	return sdk.ChainAnteDecorators(
+		evmoscosmosante.NewRejectMessagesDecorator(), // reject all EVM transactions
+		evmoscosmosante.NewAuthzLimiterDecorator( // disable the Msg types that cannot be included on an authz.MsgExec msgs field
+			sdk.MsgTypeURL(&evmtypes.MsgEthereumTx{}),
+		),
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
 		wasmkeeper.NewLimitSimulationGasDecorator(options.wasmConfig.SimulationGasLimit),
 		wasmkeeper.NewCountTXDecorator(options.txCounterStoreKey),
-		ante.NewExtensionOptionsDecorator(nil),
+		// // TODO: should this be removed? We are rejecting all unknown extension options currently in the main ante handler definition.
+		// // Also this would be rejecting dynamic fee transactions currently, which are needed for EIP-1559 transactions to work.
+		// ante.NewExtensionOptionsDecorator(nil),
 		v9.MsgFilterDecorator{},
 		// Use Mempool Fee Decorator from our txfees module instead of default one from auth
 		// https://github.com/cosmos/cosmos-sdk/blob/master/x/auth/middleware/fee.go#L34
