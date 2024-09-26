@@ -288,7 +288,8 @@ replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
 
 	// Needs to be replaced due to iavlFastNodeModuleWhitelist feature
-	cosmossdk.io/store => github.com/osmosis-labs/cosmos-sdk/store v0.1.0-alpha.1.0.20240509221435-b8feb2ffb728
+	// TODO: unify with replacement for MalteHerrmann fork?
+	// cosmossdk.io/store => github.com/osmosis-labs/cosmos-sdk/store v0.1.0-alpha.1.0.20240509221435-b8feb2ffb728
 
 	// Using branch osmo/v0.38.x
 	// https://github.com/osmosis-labs/cometbft/releases/tag/v0.37.4-v25-osmo-2
@@ -327,6 +328,7 @@ exclude github.com/gogo/protobuf v1.3.3
 
 // evmOS replacements
 replace (
+	cosmossdk.io/store => github.com/MalteHerrmann/cosmos-sdk/store v0.0.0-20240925100621-9a21fb6f400b
 	// required because it's using the CacheMultiStore.Copy() method which is not available in the original
 	github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.50.1-0.20240925153347-c4a52206eaf9
 

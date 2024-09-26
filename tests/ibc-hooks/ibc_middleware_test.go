@@ -8,6 +8,7 @@ import (
 	"time"
 
 	abci "github.com/cometbft/cometbft/abci/types"
+
 	appparams "github.com/osmosis-labs/osmosis/v25/app/params"
 
 	"github.com/tidwall/gjson"
@@ -77,15 +78,15 @@ func (suite *HooksTestSuite) SetupTest() {
 
 	suite.Setup()
 	ibctesting.DefaultTestingAppInit = osmosisibctesting.SetupTestingApp
-	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 3)
+	suite.coordinator = osmosisibctesting.NewCoordinator(suite.T(), 3)
 	suite.chainA = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(1)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(1)),
 	}
 	suite.chainB = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(2)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(2)),
 	}
 	suite.chainC = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(3)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(3)),
 	}
 	err := suite.chainA.MoveEpochsToTheFuture()
 	suite.Require().NoError(err)
