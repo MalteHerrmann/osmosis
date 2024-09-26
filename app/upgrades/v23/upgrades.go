@@ -14,12 +14,13 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v25/app/keepers"
 	"github.com/osmosis-labs/osmosis/v25/app/upgrades"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 	concentratedliquidity "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity"
 	concentratedtypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
 )
 
 const (
-	mainnetChainID = "osmosis-1"
+	mainnetChainID = osmoconstants.MainnetChainID
 	// Edgenet is to function exactly the samas mainnet, and expected
 	// to be state-exported from mainnet state.
 	edgenetChainID = "edgenet"

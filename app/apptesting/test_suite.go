@@ -35,6 +35,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/v25/app"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 
 	"github.com/osmosis-labs/osmosis/v25/x/gamm/pool-models/balancer"
 	gammtypes "github.com/osmosis-labs/osmosis/v25/x/gamm/types"
@@ -233,7 +234,7 @@ func (s *KeeperTestHelper) SetupWithLevelDb() func() {
 }
 
 func (s *KeeperTestHelper) setupGeneral() {
-	s.setupGeneralCustomChainId("osmosis-1")
+	s.setupGeneralCustomChainId(osmoconstants.MainnetChainID)
 }
 
 func (s *KeeperTestHelper) setupGeneralCustomChainId(chainId string) {

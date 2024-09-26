@@ -14,6 +14,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/osmomath"
 	osmosisapp "github.com/osmosis-labs/osmosis/v25/app"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 
 	simapp "github.com/osmosis-labs/osmosis/v25/app"
 	mempool1559 "github.com/osmosis-labs/osmosis/v25/x/txfees/keeper/mempool-1559"
@@ -34,7 +35,7 @@ func TestSetBaseDenomOnInitBlock(t *testing.T) {
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: sims.DefaultConsensusParams,
 			AppStateBytes:   stateBytes,
-			ChainId:         "osmosis-1",
+			ChainId:         osmoconstants.MainnetChainID,
 		},
 	)
 
@@ -45,7 +46,7 @@ func TestSetBaseDenomOnInitBlock(t *testing.T) {
 
 func TestBeginBlock(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContextLegacy(false, tmproto.Header{ChainID: "osmosis-1", Height: 1})
+	ctx := app.BaseApp.NewContextLegacy(false, tmproto.Header{ChainID: osmoconstants.MainnetChainID, Height: 1})
 
 	genesisState := osmosisapp.GenesisStateWithValSet(app)
 	stateBytes, err := json.MarshalIndent(genesisState, "", " ")
@@ -58,7 +59,7 @@ func TestBeginBlock(t *testing.T) {
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: sims.DefaultConsensusParams,
 			AppStateBytes:   stateBytes,
-			ChainId:         "osmosis-1",
+			ChainId:         osmoconstants.MainnetChainID,
 		},
 	)
 

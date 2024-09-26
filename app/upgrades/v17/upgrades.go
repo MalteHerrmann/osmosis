@@ -16,6 +16,7 @@ import (
 
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 	cltypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
 	gammtypes "github.com/osmosis-labs/osmosis/v25/x/gamm/types"
 	gammmigration "github.com/osmosis-labs/osmosis/v25/x/gamm/types/migration"
@@ -37,7 +38,7 @@ type clPoolCreationInfo struct {
 }
 
 const (
-	mainnetChainID = "osmosis-1"
+	mainnetChainID = osmoconstants.MainnetChainID
 	e2eChainA      = "osmo-test-a"
 	e2eChainB      = "osmo-test-b"
 )
