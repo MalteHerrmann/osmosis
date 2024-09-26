@@ -6,6 +6,8 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	"github.com/osmosis-labs/osmosis/v25/app/keepers"
+
+	evmtypes "github.com/evmos/os/x/evm/types"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json
@@ -51,6 +53,11 @@ func NewDefaultGenesisState() GenesisState {
 		},
 	}
 	gen[wasmtypes.ModuleName] = encCfg.Marshaler.MustMarshalJSON(&wasmGen)
+
+	evmGen := evmtypes.DefaultGenesisState()
+	evmGen.Params.EvmDenom = "uosmo"
+	gen[evmtypes.ModuleName] = encCfg.Marshaler.MustMarshalJSON(evmGen)
+
 	defaultGenesisState = cloneGenesisState(gen)
 	return gen
 }
