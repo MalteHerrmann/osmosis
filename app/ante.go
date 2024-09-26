@@ -62,14 +62,9 @@ type HandlerOptions struct {
 	maxGasWanted        uint64
 }
 
-// TODO: check rest of items
 func (options HandlerOptions) Validate() error {
 	if options.appOpts == nil {
 		return errorsmod.Wrap(errortypes.ErrLogic, "appOpts cannot be nil")
-	}
-
-	if options.wasmConfig.SimulationGasLimit == nil {
-		return errorsmod.Wrap(errortypes.ErrLogic, "wasmConfig.SimulationGasLimit cannot be 0")
 	}
 
 	if options.txCounterStoreKey == nil {
