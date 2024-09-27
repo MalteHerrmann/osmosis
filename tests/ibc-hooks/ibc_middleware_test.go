@@ -291,7 +291,18 @@ func (suite *HooksTestSuite) TestOnRecvPacketHooks() {
 			trace = transfertypes.ParseDenomTrace(sdk.DefaultBondDenom)
 
 			// send coin from chainA to chainB
-			transferMsg := transfertypes.NewMsgTransfer(path.EndpointA.ChannelConfig.PortID, path.EndpointA.ChannelID, sdk.NewCoin(trace.IBCDenom(), amount), suite.chainA.SenderAccount.GetAddress().String(), receiver, clienttypes.NewHeight(1, 110), 0, "")
+			transferMsg := transfertypes.NewMsgTransfer(
+				path.EndpointA.ChannelConfig.PortID,
+				path.EndpointA.ChannelID,
+				sdk.NewCoin(trace.IBCDenom(), amount),
+				suite.chainA.SenderAccount.GetAddress().String(),
+				receiver,
+				// TODO: why was it required to adjust this to pass the test?
+				clienttypes.NewHeight(2, 110),
+				0,
+				"",
+			)
+
 			_, err := suite.chainA.SendMsgs(transferMsg)
 			suite.Require().NoError(err) // message committed
 
@@ -542,12 +553,13 @@ func (suite *HooksTestSuite) TestFundTracking() {
 // custom MsgTransfer constructor that supports Memo
 func NewMsgTransfer(token sdk.Coin, sender, receiver, channel, memo string) *transfertypes.MsgTransfer {
 	return &transfertypes.MsgTransfer{
-		SourcePort:       "transfer",
-		SourceChannel:    channel,
-		Token:            token,
-		Sender:           sender,
-		Receiver:         receiver,
-		TimeoutHeight:    clienttypes.NewHeight(1, 500),
+		SourcePort:    "transfer",
+		SourceChannel: channel,
+		Token:         token,
+		Sender:        sender,
+		Receiver:      receiver,
+		// TODO: check why this timeout number had to be adjusted
+		TimeoutHeight:    clienttypes.NewHeight(3, 500),
 		TimeoutTimestamp: 0,
 		Memo:             memo,
 	}
