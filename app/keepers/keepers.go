@@ -679,7 +679,7 @@ func (appKeepers *AppKeepers) InitEvmOSKeepers(
 	appKeepers.EVMKeeper = evmkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[evmtypes.StoreKey],
-		appKeepers.tkeys[evmtypes.ModuleName],
+		appKeepers.tkeys[evmtypes.TransientKey],
 		authtypes.NewModuleAddress(govtypes.ModuleName),
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,

@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 
+	storetypes "cosmossdk.io/store/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/osmoutils/osmoassert"
 	"github.com/osmosis-labs/osmosis/v25/app/apptesting"
@@ -42,7 +43,10 @@ func TestSuiteRun(t *testing.T) {
 func (s *TestSuite) SetupTest() {
 	s.Setup()
 	s.twapkeeper = s.App.TwapKeeper
-	s.Ctx = s.Ctx.WithBlockTime(baseTime)
+	s.Ctx = s.Ctx.
+		WithBlockTime(baseTime).
+		WithBlockGasMeter(storetypes.NewInfiniteGasMeter())
+
 	// add x/twap test specific denoms
 	poolManagerParams := s.App.PoolManagerKeeper.GetParams(s.Ctx)
 	poolManagerParams.AuthorizedQuoteDenoms = append(poolManagerParams.AuthorizedQuoteDenoms, denom0, denom1, denom2)

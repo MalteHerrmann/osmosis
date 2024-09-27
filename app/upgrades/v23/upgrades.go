@@ -20,7 +20,6 @@ import (
 )
 
 const (
-	mainnetChainID = osmoconstants.MainnetChainID
 	// Edgenet is to function exactly the samas mainnet, and expected
 	// to be state-exported from mainnet state.
 	edgenetChainID = "edgenet"
@@ -30,6 +29,10 @@ const (
 	// E2E chain IDs which we expect to migrate all pools similar to testnet.
 	e2eChainIDA = "osmo-test-a"
 	e2eChainIDB = "osmo-test-b"
+)
+
+var (
+	mainnetChainID = osmoconstants.MainnetChainID
 )
 
 func CreateUpgradeHandler(

@@ -39,7 +39,7 @@ type TestChain struct {
 
 // GetOsmosisTestingChainID returns the chainID used for the provided index.
 func GetOsmosisTestingChainID(index int) string {
-	return fmt.Sprintf("%s-test_%d-%d", osmoconstants.ChainIDPrefix, osmoconstants.EIP155ChainID, index)
+	return fmt.Sprintf("%stest_%d-%d", osmoconstants.ChainIDPrefix, osmoconstants.EIP155ChainID, index)
 }
 
 func SetupTestingApp() (ibctesting.TestingApp, map[string]json.RawMessage) {

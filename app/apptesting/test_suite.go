@@ -238,7 +238,11 @@ func (s *KeeperTestHelper) setupGeneral() {
 }
 
 func (s *KeeperTestHelper) setupGeneralCustomChainId(chainId string) {
-	s.Ctx = s.App.BaseApp.NewContextLegacy(false, cmtproto.Header{Height: 1, ChainID: chainId, Time: defaultTestStartTime})
+	s.Ctx = s.App.BaseApp.NewContextLegacy(false, cmtproto.Header{Height: 1, ChainID: chainId, Time: defaultTestStartTime}).
+		// NOTE: we need to set a block gas meter for the end block of the x/feemarket module from evmOS
+		// TODO: this can be removed once the feemarket is removed from the prototype, after adjusting x/evm to accept Osmo's EIP-1559 solution
+		WithBlockGasMeter(storetypes.NewInfiniteGasMeter())
+
 	if s.withCaching {
 		s.Ctx, _ = s.Ctx.CacheContext()
 	}
@@ -320,10 +324,14 @@ func (s *KeeperTestHelper) Commit() {
 	header.Time = newBlockTime
 	header.Height++
 
-	s.Ctx = s.App.BaseApp.NewUncachedContext(false, header).WithHeaderInfo(coreheader.Info{
-		Height: header.Height,
-		Time:   header.Time,
-	})
+	s.Ctx = s.App.BaseApp.NewUncachedContext(false, header).
+		WithHeaderInfo(coreheader.Info{
+			Height: header.Height,
+			Time:   header.Time,
+		}).
+		// NOTE: we need to set a block gas meter for the end block of the x/feemarket module from evmOS
+		// TODO: this can be removed once the feemarket is removed from the prototype, after adjusting x/evm to accept Osmo's EIP-1559 solution
+		WithBlockGasMeter(storetypes.NewInfiniteGasMeter())
 
 	s.hasUsedAbci = true
 }
@@ -436,7 +444,12 @@ func (s *KeeperTestHelper) BeginNewBlockWithProposer(executeNextEpoch bool, prop
 		newBlockTime = s.Ctx.BlockTime().Add(epoch.Duration).Add(time.Second)
 	}
 
-	header := cmtproto.Header{Height: s.Ctx.BlockHeight() + 1, Time: newBlockTime}
+	header := cmtproto.Header{
+		Height:  s.Ctx.BlockHeight() + 1,
+		Time:    newBlockTime,
+		ChainID: s.App.ChainID(),
+	}
+
 	s.Ctx = s.Ctx.WithBlockTime(newBlockTime).WithBlockHeight(s.Ctx.BlockHeight() + 1)
 	voteInfos := []abci.VoteInfo{{
 		Validator:   abci.Validator{Address: valAddr, Power: 1000},
