@@ -1,19 +1,18 @@
 package app
 
 import (
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-
 	errorsmod "cosmossdk.io/errors"
 	txsigning "cosmossdk.io/x/tx/signing"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	errortypes "github.com/cosmos/cosmos-sdk/types/errors"
 	ante "github.com/cosmos/cosmos-sdk/x/auth/ante"
+	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	evmosanteinterfaces "github.com/evmos/os/ante/interfaces"
 
 	osmoante "github.com/osmosis-labs/osmosis/v25/ante"
@@ -151,6 +150,11 @@ func NewHandlerOptions(
 // transaction-level processing (e.g. fee payment, signature verification) before
 // being passed onto it's respective handler.
 func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
+	// TODO: check if this is fine, prior the mempool decorator was always instantiated, which was setting the
+	// backup file path.
+	// Now, since the decorators are only instantiated for non-EVM transactions, we have to manually call this here.
+	options.txFeesKeeper.SetBackupFilePath()
+
 	return func(
 		ctx sdk.Context, tx sdk.Tx, sim bool,
 	) (newCtx sdk.Context, err error) {
