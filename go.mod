@@ -31,7 +31,7 @@ require (
 	github.com/cosmos/ibc-go/modules/light-clients/08-wasm v0.1.1-ibc-go-v7.3-wasmvm-v1.5
 	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/cosmos/rosetta v0.50.9
-	github.com/evmos/os v0.0.0-20240925093013-1e43b90ab308
+	github.com/evmos/os v0.0.0-20240927075338-fdb81eba8360
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
@@ -337,6 +337,6 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
 
-	// local building
-	github.com/evmos/os => ../../evmos/os
+//// local building
+//github.com/evmos/os => ../../evmos/os
 )
