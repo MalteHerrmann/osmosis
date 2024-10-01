@@ -11,9 +11,9 @@ import (
 	cosmosdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
-	"github.com/osmosis-labs/osmosis/v25/simulation/executor/internal/stats"
-	"github.com/osmosis-labs/osmosis/v25/simulation/simtypes/simlogger"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
+	"github.com/osmosis-labs/osmosis/v26/simulation/executor/internal/stats"
+	"github.com/osmosis-labs/osmosis/v26/simulation/simtypes/simlogger"
 )
 
 var SimAppChainID = fmt.Sprintf("osmosissimtest_%d-%d", osmoconstants.EIP155ChainID, osmoconstants.ChainIDSuffix)

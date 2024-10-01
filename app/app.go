@@ -43,26 +43,27 @@ import (
 	"github.com/cosmos/ibc-go/modules/capability"
 	ibcwasmkeeper "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/keeper"
 	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
+
 	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
 	ibc "github.com/cosmos/ibc-go/v8/modules/core"
 
-	"github.com/osmosis-labs/osmosis/v25/ingest/common/poolextractor"
-	"github.com/osmosis-labs/osmosis/v25/ingest/common/pooltracker"
-	"github.com/osmosis-labs/osmosis/v25/ingest/common/writelistener"
-	"github.com/osmosis-labs/osmosis/v25/ingest/indexer"
-	indexerdomain "github.com/osmosis-labs/osmosis/v25/ingest/indexer/domain"
-	indexerservice "github.com/osmosis-labs/osmosis/v25/ingest/indexer/service"
-	indexerwritelistener "github.com/osmosis-labs/osmosis/v25/ingest/indexer/service/writelistener"
-	"github.com/osmosis-labs/osmosis/v25/ingest/sqs"
-	"github.com/osmosis-labs/osmosis/v25/ingest/sqs/domain"
-	poolstransformer "github.com/osmosis-labs/osmosis/v25/ingest/sqs/pools/transformer"
+	"github.com/osmosis-labs/osmosis/v26/ingest/common/poolextractor"
+	"github.com/osmosis-labs/osmosis/v26/ingest/common/pooltracker"
+	"github.com/osmosis-labs/osmosis/v26/ingest/common/writelistener"
+	"github.com/osmosis-labs/osmosis/v26/ingest/indexer"
+	indexerdomain "github.com/osmosis-labs/osmosis/v26/ingest/indexer/domain"
+	indexerservice "github.com/osmosis-labs/osmosis/v26/ingest/indexer/service"
+	indexerwritelistener "github.com/osmosis-labs/osmosis/v26/ingest/indexer/service/writelistener"
+	"github.com/osmosis-labs/osmosis/v26/ingest/sqs"
+	"github.com/osmosis-labs/osmosis/v26/ingest/sqs/domain"
+	poolstransformer "github.com/osmosis-labs/osmosis/v26/ingest/sqs/pools/transformer"
 
-	sqsservice "github.com/osmosis-labs/osmosis/v25/ingest/sqs/service"
-	concentratedtypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
-	cosmwasmpooltypes "github.com/osmosis-labs/osmosis/v25/x/cosmwasmpool/types"
-	gammtypes "github.com/osmosis-labs/osmosis/v25/x/gamm/types"
+	sqsservice "github.com/osmosis-labs/osmosis/v26/ingest/sqs/service"
+	concentratedtypes "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/types"
+	cosmwasmpooltypes "github.com/osmosis-labs/osmosis/v26/x/cosmwasmpool/types"
+	gammtypes "github.com/osmosis-labs/osmosis/v26/x/gamm/types"
 
-	commondomain "github.com/osmosis-labs/osmosis/v25/ingest/common/domain"
+	commondomain "github.com/osmosis-labs/osmosis/v26/ingest/common/domain"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
 
@@ -109,39 +110,40 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
-	appparams "github.com/osmosis-labs/osmosis/v25/app/params"
+	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
 
-	minttypes "github.com/osmosis-labs/osmosis/v25/x/mint/types"
-	protorevtypes "github.com/osmosis-labs/osmosis/v25/x/protorev/types"
+	minttypes "github.com/osmosis-labs/osmosis/v26/x/mint/types"
+	protorevtypes "github.com/osmosis-labs/osmosis/v26/x/protorev/types"
 
-	"github.com/osmosis-labs/osmosis/v25/app/keepers"
-	"github.com/osmosis-labs/osmosis/v25/app/upgrades"
-	v10 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v10"
-	v11 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v11"
-	v12 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v12"
-	v13 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v13"
-	v14 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v14"
-	v15 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v15"
-	v16 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v16"
-	v17 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v17"
-	v18 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v18"
-	v19 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v19"
-	v20 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v20"
-	v21 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v21"
-	v22 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v22"
-	v23 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v23"
-	v24 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v24"
-	v25 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v25"
-	v26 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v26"
-	v3 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v3"
-	v4 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v4"
-	v5 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v5"
-	v6 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v6"
-	v7 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v7"
-	v8 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v8"
-	v9 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v9"
-	_ "github.com/osmosis-labs/osmosis/v25/client/docs/statik"
-	"github.com/osmosis-labs/osmosis/v25/x/mint"
+	"github.com/osmosis-labs/osmosis/v26/app/keepers"
+	"github.com/osmosis-labs/osmosis/v26/app/upgrades"
+	v10 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v10"
+	v11 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v11"
+	v12 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v12"
+	v13 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v13"
+	v14 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v14"
+	v15 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v15"
+	v16 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v16"
+	v17 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v17"
+	v18 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v18"
+	v19 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v19"
+	v20 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v20"
+	v21 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v21"
+	v22 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v22"
+	v23 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v23"
+	v24 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v24"
+	v25 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v25"
+	v26 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v26"
+	v27 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v27"
+	v3 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v3"
+	v4 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v4"
+	v5 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v5"
+	v6 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v6"
+	v7 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v7"
+	v8 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v8"
+	v9 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v9"
+	_ "github.com/osmosis-labs/osmosis/v26/client/docs/statik"
+	"github.com/osmosis-labs/osmosis/v26/x/mint"
 
 	blocksdkabci "github.com/skip-mev/block-sdk/v2/abci"
 	"github.com/skip-mev/block-sdk/v2/abci/checktx"
@@ -150,14 +152,14 @@ import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 
-	clclient "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/client"
-	cwpoolclient "github.com/osmosis-labs/osmosis/v25/x/cosmwasmpool/client"
-	gammclient "github.com/osmosis-labs/osmosis/v25/x/gamm/client"
-	incentivesclient "github.com/osmosis-labs/osmosis/v25/x/incentives/client"
-	poolincentivesclient "github.com/osmosis-labs/osmosis/v25/x/pool-incentives/client"
-	poolmanagerclient "github.com/osmosis-labs/osmosis/v25/x/poolmanager/client"
-	superfluidclient "github.com/osmosis-labs/osmosis/v25/x/superfluid/client"
-	txfeesclient "github.com/osmosis-labs/osmosis/v25/x/txfees/client"
+	clclient "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/client"
+	cwpoolclient "github.com/osmosis-labs/osmosis/v26/x/cosmwasmpool/client"
+	gammclient "github.com/osmosis-labs/osmosis/v26/x/gamm/client"
+	incentivesclient "github.com/osmosis-labs/osmosis/v26/x/incentives/client"
+	poolincentivesclient "github.com/osmosis-labs/osmosis/v26/x/pool-incentives/client"
+	poolmanagerclient "github.com/osmosis-labs/osmosis/v26/x/poolmanager/client"
+	superfluidclient "github.com/osmosis-labs/osmosis/v26/x/superfluid/client"
+	txfeesclient "github.com/osmosis-labs/osmosis/v26/x/txfees/client"
 
 	// evmOS modules
 	evmosserverflags "github.com/evmos/os/server/flags"
@@ -197,7 +199,7 @@ var (
 
 	_ runtime.AppI = (*OsmosisApp)(nil)
 
-	Upgrades = []upgrades.Upgrade{v4.Upgrade, v5.Upgrade, v7.Upgrade, v9.Upgrade, v11.Upgrade, v12.Upgrade, v13.Upgrade, v14.Upgrade, v15.Upgrade, v16.Upgrade, v17.Upgrade, v18.Upgrade, v19.Upgrade, v20.Upgrade, v21.Upgrade, v22.Upgrade, v23.Upgrade, v24.Upgrade, v25.Upgrade, v26.Upgrade}
+	Upgrades = []upgrades.Upgrade{v4.Upgrade, v5.Upgrade, v7.Upgrade, v9.Upgrade, v11.Upgrade, v12.Upgrade, v13.Upgrade, v14.Upgrade, v15.Upgrade, v16.Upgrade, v17.Upgrade, v18.Upgrade, v19.Upgrade, v20.Upgrade, v21.Upgrade, v22.Upgrade, v23.Upgrade, v24.Upgrade, v25.Upgrade, v26.Upgrade, v27.Upgrade}
 	Forks    = []upgrades.Fork{v3.Fork, v6.Fork, v8.Fork, v10.Fork}
 
 	// rpcAddressConfigName is the name of the config key that holds the RPC address.
@@ -312,7 +314,7 @@ func NewOsmosisApp(
 	wasmDir := filepath.Join(homePath, "wasm")
 	ibcWasmConfig := ibcwasmtypes.WasmConfig{
 		DataDir:               filepath.Join(homePath, "ibc_08-wasm"),
-		SupportedCapabilities: "iterator,stargate,abort",
+		SupportedCapabilities: []string{"iterator", "stargate", "abort"},
 		ContractDebugMode:     false,
 	}
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
@@ -718,7 +720,12 @@ func NewOsmosisApp(
 
 // getSQSServiceWriteListeners returns the write listeners for the app that are specific to the SQS service.
 func getSQSServiceWriteListeners(app *OsmosisApp, appCodec codec.Codec, blockPoolUpdateTracker domain.BlockPoolUpdateTracker, wasmkeeper *wasmkeeper.Keeper) (map[storetypes.StoreKey][]commondomain.WriteListener, map[string]storetypes.StoreKey) {
-	return getPoolWriteListeners(app, appCodec, blockPoolUpdateTracker, wasmkeeper)
+	writeListeners, storeKeyMap := getPoolWriteListeners(app, appCodec, blockPoolUpdateTracker, wasmkeeper)
+
+	// Register all applicable keys as listeners
+	registerStoreKeys(app, storeKeyMap)
+
+	return writeListeners, storeKeyMap
 }
 
 // getIndexerServiceWriteListeners returns the write listeners for the app that are specific to the indexer service.
@@ -731,6 +738,9 @@ func getIndexerServiceWriteListeners(ctx context.Context, app *OsmosisApp, appCo
 	}
 
 	storeKeyMap[banktypes.ModuleName] = app.GetKey(banktypes.ModuleName)
+
+	// Register all applicable keys as listeners
+	registerStoreKeys(app, storeKeyMap)
 
 	return writeListeners, storeKeyMap
 }
@@ -759,6 +769,18 @@ func getPoolWriteListeners(app *OsmosisApp, appCodec codec.Codec, blockPoolUpdat
 	storeKeyMap[banktypes.StoreKey] = app.GetKey(banktypes.StoreKey)
 
 	return writeListeners, storeKeyMap
+}
+
+// registerStoreKeys register the store keys from the given store key map
+// on the app's commit multi store so that the change sets from these stores are propagated
+// in ListenCommit().
+func registerStoreKeys(app *OsmosisApp, storeKeyMap map[string]storetypes.StoreKey) {
+	// Register all applicable keys as listeners
+	storeKeys := make([]storetypes.StoreKey, 0)
+	for _, storeKey := range storeKeyMap {
+		storeKeys = append(storeKeys, storeKey)
+	}
+	app.CommitMultiStore().AddListeners(storeKeys)
 }
 
 // we cache the reflectionService to save us time within tests.

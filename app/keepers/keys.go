@@ -6,8 +6,8 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 
-	protorevtypes "github.com/osmosis-labs/osmosis/v25/x/protorev/types"
-	twaptypes "github.com/osmosis-labs/osmosis/v25/x/twap/types"
+	protorevtypes "github.com/osmosis-labs/osmosis/v26/x/protorev/types"
+	twaptypes "github.com/osmosis-labs/osmosis/v26/x/twap/types"
 
 	evmtypes "github.com/evmos/os/x/evm/types"
 	feemarkettypes "github.com/evmos/os/x/feemarket/types"

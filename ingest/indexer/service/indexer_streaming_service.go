@@ -4,26 +4,29 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
 	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/cometbft/cometbft/crypto/tmhash"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
-	concentratedliquiditytypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
-	gammtypes "github.com/osmosis-labs/osmosis/v25/x/gamm/types"
-	poolmanagertypes "github.com/osmosis-labs/osmosis/v25/x/poolmanager/types"
+	concentratedliquiditytypes "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/types"
+	gammtypes "github.com/osmosis-labs/osmosis/v26/x/gamm/types"
+	poolmanagertypes "github.com/osmosis-labs/osmosis/v26/x/poolmanager/types"
 
-	commondomain "github.com/osmosis-labs/osmosis/v25/ingest/common/domain"
-	"github.com/osmosis-labs/osmosis/v25/ingest/indexer/domain"
-	"github.com/osmosis-labs/osmosis/v25/ingest/indexer/service/blockprocessor"
-	sqsdomain "github.com/osmosis-labs/osmosis/v25/ingest/sqs/domain"
+	commondomain "github.com/osmosis-labs/osmosis/v26/ingest/common/domain"
+	"github.com/osmosis-labs/osmosis/v26/ingest/indexer/domain"
+	"github.com/osmosis-labs/osmosis/v26/ingest/indexer/service/blockprocessor"
+	sqsdomain "github.com/osmosis-labs/osmosis/v26/ingest/sqs/domain"
 )
 
 var (
@@ -102,6 +105,7 @@ func (s *indexerStreamingService) publishBlock(ctx context.Context, req abci.Req
 func (s *indexerStreamingService) publishTxn(ctx context.Context, req abci.RequestFinalizeBlock, res abci.ResponseFinalizeBlock) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	txns := req.GetTxs()
+	// Iterate through the transactions in the block
 	for txnIndex, txByteArr := range txns {
 		// Decode the transaction
 		tx, err := s.txDecoder(txByteArr)
@@ -120,37 +124,52 @@ func (s *indexerStreamingService) publishTxn(ctx context.Context, req abci.Reque
 		fee := feeTx.GetFee()
 
 		// Message type
-		// TO BE VERIFIED - This may not be the correct way to obtain message type
 		txMessages := tx.GetMsgs()
-		msgType := txMessages[0].String()
+		msgType := proto.MessageName(txMessages[0])
 
-		// Include these events only:
-		// - token_swapped
-		// - pool_joined
-		// - pool_exited
-		// - create_position
-		// - withdraw_position
-		events := res.GetEvents()
+		// Looping through the transaction results, each result has a list of events to be looped through
 		var includedEvents []domain.EventWrapper
-		for i, event := range events {
-			clonedEvent := deepCloneEvent(&event)
-			// Add the token liquidity to the event
-			err := s.addTokenLiquidity(ctx, clonedEvent)
-			if err != nil {
-				s.logger.Error("Error adding token liquidity to event", "error", err)
-				return err
-			}
-			err = s.adjustTokenInAmountBySpreadFactor(ctx, clonedEvent)
-			if err != nil {
-				s.logger.Error("Error adjusting amount by spread factor", "error", err)
-				continue
-			}
-			eventType := clonedEvent.Type
-			if eventType == gammtypes.TypeEvtTokenSwapped || eventType == gammtypes.TypeEvtPoolJoined || eventType == gammtypes.TypeEvtPoolExited || eventType == concentratedliquiditytypes.TypeEvtCreatePosition || eventType == concentratedliquiditytypes.TypeEvtWithdrawPosition {
-				includedEvents = append(includedEvents, domain.EventWrapper{Index: i, Event: *clonedEvent})
+		txResults := res.GetTxResults()
+		for _, txResult := range txResults {
+			events := txResult.GetEvents()
+			// Iterate through the events in the transaction
+			// Include these events only:
+			// - token_swapped
+			// - pool_joined
+			// - pool_exited
+			// - create_position
+			// - withdraw_position
+			for i, event := range events {
+				clonedEvent := deepCloneEvent(&event)
+				// Add the token liquidity to the event
+				err := s.addTokenLiquidity(ctx, clonedEvent)
+				if err != nil {
+					s.logger.Error("Error adding token liquidity to event", "error", err)
+					return err
+				}
+				err = s.adjustTokenInAmountBySpreadFactor(ctx, clonedEvent)
+				if err != nil {
+					s.logger.Error("Error adjusting amount by spread factor", "error", err)
+					continue
+				}
+				eventType := clonedEvent.Type
+				if eventType == gammtypes.TypeEvtTokenSwapped || eventType == gammtypes.TypeEvtPoolJoined || eventType == gammtypes.TypeEvtPoolExited || eventType == concentratedliquiditytypes.TypeEvtCreatePosition || eventType == concentratedliquiditytypes.TypeEvtWithdrawPosition {
+					includedEvents = append(includedEvents, domain.EventWrapper{Index: i, Event: *clonedEvent})
+				}
+				// Track the newly created pool ID
+				// IMPORTANT NOTE:
+				// 1. Using event attributes in a transaction, ONLY pool ID of the newly created pool is available and being tracked by the underlying pool tracker.
+				// 2. For the other pool metadata of the newly created pool, such as denoms and fees, they are available and tracked thru OnWrite listeners in the common/writelistener package.
+				// 3. See: block_updates_indexer_block_process_strategy.go::publishCreatedPools for more details.
+				if eventType == poolmanagertypes.TypeEvtPoolCreated {
+					err := s.trackCreatedPoolID(event, sdkCtx.BlockHeight(), sdkCtx.BlockTime().UTC(), txHash)
+					if err != nil {
+						s.logger.Error("Error tracking newly created pool ID %v. event skipped.", err)
+						continue
+					}
+				}
 			}
 		}
-
 		// Publish the transaction
 		txn := domain.Transaction{
 			Height:             uint64(sdkCtx.BlockHeight()),
@@ -312,10 +331,16 @@ func (s *indexerStreamingService) ListenCommit(ctx context.Context, res abci.Res
 	defer func() {
 		// Reset the pool tracker after processing the block.
 		s.poolTracker.Reset()
+		// Reset change set upon processing the block.
+		s.blockUpdatesProcessUtils.SetChangeSet(nil)
 	}()
 
+	// Set change set on the block updates process utils.
+	// These are processed in ProcessBlock(...) assuming "block updates" strategy.
+	s.blockUpdatesProcessUtils.SetChangeSet(changeSet)
+
 	// Create block processor
-	blockProcessor := blockprocessor.NewBlockProcessor(s.blockProcessStrategyManager, s.client, s.poolExtractor, s.keepers)
+	blockProcessor := blockprocessor.NewBlockProcessor(s.blockProcessStrategyManager, s.client, s.poolExtractor, s.keepers, s.blockUpdatesProcessUtils)
 
 	// Process block.
 	if err := blockProcessor.ProcessBlock(sdkCtx); err != nil {
@@ -336,4 +361,56 @@ func deepCloneEvent(event *abci.Event) *abci.Event {
 	clone.Attributes = make([]abci.EventAttribute, len(event.Attributes))
 	copy(clone.Attributes, event.Attributes)
 	return &clone
+}
+
+// trackCreatedPoolID tracks the created pool ID.
+// If the pool ID is not found in the event attributes, it logs an error.
+// If the pool ID is found, it parses the pool ID to uint64 and tracks it.
+func (s *indexerStreamingService) trackCreatedPoolID(event abci.Event, blockHeight int64, blockTime time.Time, txHash string) error {
+	// Check if the event is pool created event
+	if event.Type != poolmanagertypes.TypeEvtPoolCreated {
+		return fmt.Errorf("event type is not pool created event")
+	}
+
+	// Check if block height, block time or tx hash is empty
+	if blockHeight == 0 || blockTime.Equal(time.Unix(0, 0)) || txHash == "" {
+		return fmt.Errorf("block height, block time or tx hash is empty")
+	}
+
+	// Check if event attributes are empty
+	if len(event.Attributes) == 0 {
+		return fmt.Errorf("event attributes are empty")
+	}
+
+	// Find the pool ID attribute from the event attributes
+	poolIDStr := ""
+	for _, attribute := range event.Attributes {
+		if attribute.Key == poolmanagertypes.AttributeKeyPoolId {
+			poolIDStr = attribute.Value
+			break
+		}
+	}
+
+	// Check if the pool ID attribute is empty
+	if poolIDStr == "" {
+		return fmt.Errorf("pool ID attribute is not found in event attributes")
+	}
+
+	// Parse to uint64
+	createdPoolID, err := strconv.ParseUint(poolIDStr, 10, 64)
+	if err != nil {
+		return fmt.Errorf("error parsing pool ID from event attributes %v", err)
+	}
+
+	// Send the pool creation data to the pool tracker
+	poolCreation := commondomain.PoolCreation{
+		PoolId:      createdPoolID,
+		BlockHeight: blockHeight,
+		BlockTime:   blockTime,
+		TxnHash:     txHash,
+	}
+
+	s.poolTracker.TrackCreatedPoolID(poolCreation)
+
+	return nil
 }

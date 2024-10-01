@@ -11,9 +11,9 @@ import (
 	storetypes "cosmossdk.io/store/types"
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/osmoutils/osmoassert"
-	"github.com/osmosis-labs/osmosis/v25/app/apptesting"
-	"github.com/osmosis-labs/osmosis/v25/x/twap"
-	"github.com/osmosis-labs/osmosis/v25/x/twap/types"
+	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
+	"github.com/osmosis-labs/osmosis/v26/x/twap"
+	"github.com/osmosis-labs/osmosis/v26/x/twap/types"
 )
 
 // TODO: Consider switching this everywhere

@@ -1,12 +1,12 @@
 package blockprocessor
 
 import (
-	commondomain "github.com/osmosis-labs/osmosis/v25/ingest/common/domain"
-	"github.com/osmosis-labs/osmosis/v25/ingest/indexer/domain"
+	commondomain "github.com/osmosis-labs/osmosis/v26/ingest/common/domain"
+	"github.com/osmosis-labs/osmosis/v26/ingest/indexer/domain"
 )
 
 // NewBlockProcessor creates a new block process strategy.
-func NewBlockProcessor(blockProcessStrategyManager commondomain.BlockProcessStrategyManager, client domain.Publisher, poolExtractor commondomain.PoolExtractor, keepers domain.Keepers) commondomain.BlockProcessor {
+func NewBlockProcessor(blockProcessStrategyManager commondomain.BlockProcessStrategyManager, client domain.Publisher, poolExtractor commondomain.PoolExtractor, keepers domain.Keepers, blockUpdateProcessUtils commondomain.BlockUpdateProcessUtilsI) commondomain.BlockProcessor {
 	// Initialize the pool pair publisher
 	poolPairPublisher := NewPairPublisher(client, keepers.PoolManagerKeeper)
 
@@ -24,8 +24,9 @@ func NewBlockProcessor(blockProcessStrategyManager commondomain.BlockProcessStra
 	}
 
 	return &blockUpdatesIndexerBlockProcessStrategy{
-		client:            client,
-		poolExtractor:     poolExtractor,
-		poolPairPublisher: poolPairPublisher,
+		client:                  client,
+		poolExtractor:           poolExtractor,
+		poolPairPublisher:       poolPairPublisher,
+		blockUpdateProcessUtils: blockUpdateProcessUtils,
 	}
 }

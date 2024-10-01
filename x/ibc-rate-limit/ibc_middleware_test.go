@@ -2,6 +2,7 @@ package ibc_rate_limit_test
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -14,18 +15,20 @@ import (
 
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	transfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
 	ibctesting "github.com/cosmos/ibc-go/v8/testing"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
-	txfeetypes "github.com/osmosis-labs/osmosis/v25/x/txfees/types"
+	txfeetypes "github.com/osmosis-labs/osmosis/v26/x/txfees/types"
 
-	"github.com/osmosis-labs/osmosis/v25/app/apptesting"
-	"github.com/osmosis-labs/osmosis/v25/tests/osmosisibctesting"
-	"github.com/osmosis-labs/osmosis/v25/x/ibc-rate-limit/types"
+	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
+	"github.com/osmosis-labs/osmosis/v26/tests/osmosisibctesting"
+	"github.com/osmosis-labs/osmosis/v26/x/ibc-rate-limit/types"
 )
 
 type MiddlewareTestSuite struct {
@@ -91,6 +94,10 @@ func (suite *MiddlewareTestSuite) SetupTest() {
 // TODO: This needs to get removed. Waiting on https://github.com/cosmos/ibc-go/issues/3123
 func (suite *MiddlewareTestSuite) TearDownSuite() {
 	txfeetypes.ConsensusMinFee = oldConsensusMinFee
+
+	for _, dir := range osmosisibctesting.TestingDirectories {
+		os.RemoveAll(dir)
+	}
 }
 
 // Helpers

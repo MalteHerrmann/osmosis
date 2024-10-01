@@ -9,8 +9,8 @@ import (
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	mempool1559 "github.com/osmosis-labs/osmosis/v25/x/txfees/keeper/mempool-1559"
-	"github.com/osmosis-labs/osmosis/v25/x/txfees/types"
+	mempool1559 "github.com/osmosis-labs/osmosis/v26/x/txfees/keeper/mempool-1559"
+	"github.com/osmosis-labs/osmosis/v26/x/txfees/types"
 
 	storetypes "cosmossdk.io/store/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"

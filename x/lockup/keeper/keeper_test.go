@@ -7,10 +7,10 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/osmosis-labs/osmosis/v25/app"
-	"github.com/osmosis-labs/osmosis/v25/app/apptesting"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
-	"github.com/osmosis-labs/osmosis/v25/x/lockup/keeper"
+	"github.com/osmosis-labs/osmosis/v26/app"
+	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
+	"github.com/osmosis-labs/osmosis/v26/x/lockup/keeper"
 )
 
 type KeeperTestSuite struct {

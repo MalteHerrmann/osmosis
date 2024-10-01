@@ -44,6 +44,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### State Breaking
 
+* [#8682](https://github.com/osmosis-labs/osmosis/pull/8682) chore: bump cosmwasm-optimizer
+* [#8734](https://github.com/osmosis-labs/osmosis/pull/8734) chore: update cosmwasm vm
+
+### Config
+
+
+### State Compatible
+
+* [#8563](https://github.com/osmosis-labs/osmosis/pull/8563) Add additional queries in x/gauges
+* [#8726](https://github.com/osmosis-labs/osmosis/pull/8726) fix: multiple temp directories on command executions
+* [#8731](https://github.com/osmosis-labs/osmosis/pull/8731) fix: in place testnet logs
+
+### State Machine Breaking
+
+* [#8732](https://github.com/osmosis-labs/osmosis/pull/8732) fix: iterate delegations continue instead of erroring
+
+## v26.0.1
+
+### State Machine Breaking
+
+* [#8732](https://github.com/osmosis-labs/osmosis/pull/8732) fix: iterate delegations continue instead of erroring
+
+## v26.0.0
+
+### State Breaking
+
 * [#8274](https://github.com/osmosis-labs/osmosis/pull/8274) SDK v50 and Comet v0.38 upgrade
 * [#8375](https://github.com/osmosis-labs/osmosis/pull/8375) Enforce sub-authenticator to be greater than 1
 * [#8509](https://github.com/osmosis-labs/osmosis/pull/8509) Change LiquidityNetInDirection return type to sdk math
@@ -54,6 +80,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#8573](https://github.com/osmosis-labs/osmosis/pull/8573) fix: increase unauthenticated gas to fix fee token issue
 * [#8598](https://github.com/osmosis-labs/osmosis/pull/8598) feat: param changes for block and cost per byte 
 * [#8609](https://github.com/osmosis-labs/osmosis/pull/8609) Exempt `UnrestrictedPoolCreatorWhitelist` addresses from pool creation fee
+* [#8615](https://github.com/osmosis-labs/osmosis/pull/8615) chore: add tagged cosmos-sdk version: v0.50.6-v26-osmo-1
+* [#8616](https://github.com/osmosis-labs/osmosis/pull/8616) chore: upgrade wasmd to v0.53.0 and wasmvm to v2.1.2
+* [#8628](https://github.com/osmosis-labs/osmosis/pull/8628) chore: add tagged cometbft version: v0.38.11-v26-osmo-1
+* [#8649](https://github.com/osmosis-labs/osmosis/pull/8649) chore: update to tagged submodules
+* [#8663](https://github.com/osmosis-labs/osmosis/pull/8663) fix: protorev throws a nil pointer
+* [#8676](https://github.com/osmosis-labs/osmosis/pull/8676) fix: update enforce sub-authenticator to be greater than 1 error message
+* [#8682](https://github.com/osmosis-labs/osmosis/pull/8682) chore: bump cosmwasm-optimizer
 
 ### Config
 
@@ -64,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#8494](https://github.com/osmosis-labs/osmosis/pull/8494) Add additional events in x/lockup, x/superfluid, x/concentratedliquidity
 * [#8543](https://github.com/osmosis-labs/osmosis/pull/8543) Add OTEL wiring and new configs in app.toml
 * [#8566](https://github.com/osmosis-labs/osmosis/pull/8566) Minor speedup to CalcExitCFMM shares
-
+* [#8665](https://github.com/osmosis-labs/osmosis/pull/8665) fix: smart account signing checktx error
 
 ## v25.2.1
 * [#8546](https://github.com/osmosis-labs/osmosis/pull/8546) feat: reduce commit timeout to 500ms to enable faster blocks, and timeout propose to 1.8s

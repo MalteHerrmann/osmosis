@@ -18,7 +18,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/osmosis-labs/osmosis/osmoutils"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 type OTELConfig struct {

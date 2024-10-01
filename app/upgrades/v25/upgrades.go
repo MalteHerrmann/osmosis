@@ -16,12 +16,12 @@ import (
 	slashing "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 
-	"github.com/osmosis-labs/osmosis/v25/app/keepers"
-	"github.com/osmosis-labs/osmosis/v25/app/upgrades"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	"github.com/osmosis-labs/osmosis/v26/app/keepers"
+	"github.com/osmosis-labs/osmosis/v26/app/upgrades"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 
-	concentratedliquidity "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity"
-	concentratedtypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
+	concentratedliquidity "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity"
+	concentratedtypes "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/types"
 )
 
 const (

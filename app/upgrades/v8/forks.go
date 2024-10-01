@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 
-	"github.com/osmosis-labs/osmosis/v25/app/keepers"
+	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 )
 
 // RunForkLogic executes height-gated on-chain fork logic for the Osmosis v8

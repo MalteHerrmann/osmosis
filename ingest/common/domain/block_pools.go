@@ -1,8 +1,18 @@
 package commondomain
 
 import (
-	poolmanagertypes "github.com/osmosis-labs/osmosis/v25/x/poolmanager/types"
+	"time"
+
+	poolmanagertypes "github.com/osmosis-labs/osmosis/v26/x/poolmanager/types"
 )
+
+// PoolCreation contains the information about a pool creation.
+type PoolCreation struct {
+	PoolId      uint64
+	BlockHeight int64
+	BlockTime   time.Time
+	TxnHash     string
+}
 
 // BlockPools contains the pools to be ingested in a block.
 type BlockPools struct {

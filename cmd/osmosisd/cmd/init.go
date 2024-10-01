@@ -30,8 +30,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	"github.com/osmosis-labs/osmosis/v25/app"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	"github.com/osmosis-labs/osmosis/v26/app"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 const (

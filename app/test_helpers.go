@@ -167,6 +167,7 @@ func SetupTestingAppWithLevelDb(isCheckTx bool) (app *OsmosisApp, cleanupFn func
 	if err != nil {
 		panic(err)
 	}
+
 	app = NewOsmosisApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, sims.EmptyAppOptions{}, EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
 	if !isCheckTx {
 		genesisState := GenesisStateWithValSet(app)

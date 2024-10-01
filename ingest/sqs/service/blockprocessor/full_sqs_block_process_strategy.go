@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/hashicorp/go-metrics"
 
-	commondomain "github.com/osmosis-labs/osmosis/v25/ingest/common/domain"
-	"github.com/osmosis-labs/osmosis/v25/ingest/sqs/domain"
+	commondomain "github.com/osmosis-labs/osmosis/v26/ingest/common/domain"
+	"github.com/osmosis-labs/osmosis/v26/ingest/sqs/domain"
 )
 
 type fullSQSBlockProcessStrategy struct {
@@ -44,7 +44,7 @@ func (f *fullSQSBlockProcessStrategy) ProcessBlock(ctx sdk.Context) (err error) 
 		return domain.ErrNodeIsSyncing
 	}
 
-	pools, err := f.poolExtractor.ExtractAll(ctx)
+	pools, _, err := f.poolExtractor.ExtractAll(ctx)
 	if err != nil {
 		return err
 	}

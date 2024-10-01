@@ -26,11 +26,11 @@ import (
 	confixcmd "cosmossdk.io/tools/confix/cmd"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
-	"github.com/osmosis-labs/osmosis/v25/app/params"
-	v23 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v23" // should be automated to be updated to current version every upgrade
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
-	"github.com/osmosis-labs/osmosis/v25/ingest/indexer"
-	"github.com/osmosis-labs/osmosis/v25/ingest/sqs"
+	"github.com/osmosis-labs/osmosis/v26/app/params"
+	v23 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v23" // should be automated to be updated to current version every upgrade
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
+	"github.com/osmosis-labs/osmosis/v26/ingest/indexer"
+	"github.com/osmosis-labs/osmosis/v26/ingest/sqs"
 
 	"cosmossdk.io/log"
 	tmcfg "github.com/cometbft/cometbft/config"
@@ -75,7 +75,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	osmosis "github.com/osmosis-labs/osmosis/v25/app"
+	osmosis "github.com/osmosis-labs/osmosis/v26/app"
 )
 
 type AssetList struct {
@@ -355,7 +355,16 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithHomeDir(homeDir).
 		WithViper("OSMOSIS")
 
-	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, osmosis.DefaultNodeHome, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
+	tempDir := tempDir()
+	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, tempDir, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
+	defer func() {
+		if err := tempApp.Close(); err != nil {
+			panic(err)
+		}
+		if tempDir != osmosis.DefaultNodeHome {
+			os.RemoveAll(tempDir)
+		}
+	}()
 
 	// Allows you to add extra params to your client.toml
 	// gas, gas-price, gas-adjustment, and human-readable-denoms
@@ -474,6 +483,17 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	}
 
 	return rootCmd, encodingConfig
+}
+
+// tempDir create a temporary directory to initialize the command line client
+func tempDir() string {
+	dir, err := os.MkdirTemp("", "osmosisd")
+	if err != nil {
+		panic(fmt.Sprintf("failed creating temp directory: %s", err.Error()))
+	}
+	defer os.RemoveAll(dir)
+
+	return dir
 }
 
 // overwriteConfigTomlValues overwrites config.toml values. Returns error if config.toml does not exist
@@ -709,6 +729,11 @@ grpc-ingest-max-call-size-bytes = "{{ .SidecarQueryServerConfig.GRPCIngestMaxCal
 
 # The indexer service is disabled by default.
 is-enabled = "{{ .IndexerConfig.IsEnabled }}"
+
+# Max publish delay in seconds for the indexer service.
+# Migitate the issue of messages remaining pending when the publishing rate is low,
+# ensuring timely delivery and preventing messages from appearing undelivered
+max-publish-delay = "{{ .IndexerConfig.MaxPublishDelay }}"
 
 # The GCP project id to use for the indexer service.
 gcp-project-id = "{{ .IndexerConfig.GCPProjectId }}"

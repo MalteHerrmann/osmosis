@@ -44,7 +44,7 @@ LEDGER_ENABLED ?= true
 SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BUILDDIR ?= $(CURDIR)/build
 DOCKER := $(shell which docker)
-E2E_UPGRADE_VERSION := "v26"
+E2E_UPGRADE_VERSION := "v27"
 #SHELL := /bin/bash
 
 # Go version to be used in docker images
@@ -212,7 +212,7 @@ go-mock-update:
 ###                                Release                                  ###
 ###############################################################################
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm/v2 | sed 's/.* //')
 
 ifdef GITHUB_TOKEN
 release:

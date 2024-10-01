@@ -17,8 +17,8 @@ import (
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
-	smartaccounttypes "github.com/osmosis-labs/osmosis/v25/x/smart-account/types"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
+	smartaccounttypes "github.com/osmosis-labs/osmosis/v26/x/smart-account/types"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 
@@ -28,7 +28,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ibctesting "github.com/cosmos/ibc-go/v8/testing"
 
-	"github.com/osmosis-labs/osmosis/v25/app"
+	"github.com/osmosis-labs/osmosis/v26/app"
 )
 
 const SimAppChainID = "simulation-app"
@@ -42,8 +42,16 @@ func GetOsmosisTestingChainID(index int) string {
 	return fmt.Sprintf("%stest_%d-%d", osmoconstants.ChainIDPrefix, osmoconstants.EIP155ChainID, index)
 }
 
+// NOTE: we create a global variable here to deal with testing directories,
+// this is necessary as there is now a lock file in the latest wasm that will panics our tests,
+// this is a workaround, we should do something smarter that sets the home dir and removes the home dir
+var TestingDirectories []string
+
 func SetupTestingApp() (ibctesting.TestingApp, map[string]json.RawMessage) {
-	osmosisApp := app.Setup(false)
+	// TODO: find a better way to do this, the likely hood that this will collide is small but not 0
+	dirName := fmt.Sprintf("%d", rand.Int())
+	osmosisApp := app.SetupWithCustomHome(false, dirName)
+	TestingDirectories = append(TestingDirectories, dirName)
 	return osmosisApp, app.NewDefaultGenesisState()
 }
 

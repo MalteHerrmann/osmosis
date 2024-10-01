@@ -6,8 +6,8 @@ import (
 	store "cosmossdk.io/store/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	"github.com/osmosis-labs/osmosis/v25/app/upgrades"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	"github.com/osmosis-labs/osmosis/v26/app/upgrades"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 // UpgradeName defines the on-chain upgrade name for the Osmosis v21 upgrade.

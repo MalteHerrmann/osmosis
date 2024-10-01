@@ -5,7 +5,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	"github.com/osmosis-labs/osmosis/v25/app/keepers"
+	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 
 	evmtypes "github.com/evmos/os/x/evm/types"
 )
