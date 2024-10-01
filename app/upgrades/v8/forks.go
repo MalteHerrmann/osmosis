@@ -2,7 +2,7 @@ package v8
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 
 	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 )

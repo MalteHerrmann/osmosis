@@ -14,10 +14,10 @@ use ./x/epochs
 
 replace github.com/onsi/ginkgo => github.com/onsi/ginkgo v1.16.5
 
-replace github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
+replace github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20241001155432-bb4997264516
 
 replace github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
 
-replace github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.50.1-0.20240925153347-c4a52206eaf9
+replace github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.53.1-0.20241001160509-ecf06d9077fe
 
 replace cosmossdk.io/store => github.com/MalteHerrmann/cosmos-sdk/store v0.0.0-20240925100621-9a21fb6f400b

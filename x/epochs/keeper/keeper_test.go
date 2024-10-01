@@ -13,7 +13,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	epochskeeper "github.com/osmosis-labs/osmosis/x/epochs/keeper"
 	"github.com/osmosis-labs/osmosis/x/epochs/types"
 )

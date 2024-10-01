@@ -11,7 +11,7 @@ package cosmwasm_test
 // 	"github.com/stretchr/testify/suite"
 
 // 	"github.com/osmosis-labs/osmosis/osmoutils/cosmwasm"
-// 	"github.com/osmosis-labs/osmosis/v25/app/apptesting"
+// 	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
 // )
 
 // type KeeperTestSuite struct {

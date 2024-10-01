@@ -11,7 +11,7 @@ import (
 	cosmosdb "github.com/cosmos/cosmos-db"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 
 	sdkmath "cosmossdk.io/math"
 	tmtypes "github.com/cometbft/cometbft/types"

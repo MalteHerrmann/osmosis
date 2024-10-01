@@ -62,7 +62,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.30.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
-	google.golang.org/genproto/googleapis/api v0.0.0-20240722135656-d784300faade
+	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1
 	google.golang.org/grpc v1.66.2
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v2 v2.4.0
@@ -120,7 +120,7 @@ require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/google/btree v1.1.2 // indirect
+	github.com/google/btree v1.1.3 // indirect
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -154,13 +154,13 @@ require (
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/prometheus/tsdb v0.10.0 // indirect
 	github.com/osmosis-labs/sqs v0.19.2-rc2.0.20240826173240-e5733bb3700d // indirect
+	github.com/prometheus/tsdb v0.10.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
-	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/shamaton/msgpack/v2 v2.2.0 // indirect
+	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
@@ -308,7 +308,7 @@ replace (
 	// Direct cosmos-sdk branch link: https://github.com/osmosis-labs/cosmos-sdk/tree/osmo/v0.50.x, current branch: osmo/v0.50.x.
 	// Direct commit link: https://github.com/osmosis-labs/cosmos-sdk/commit/e7668cab6be057191ee826fee2dee9d0dc2caab7
 	// Direct tag link: https://github.com/osmosis-labs/cosmos-sdk/releases/tag/v0.50.6-v26-osmo-3
-	github.com/cosmos/cosmos-sdk => github.com/osmosis-labs/cosmos-sdk v0.50.6-v26-osmo-3
+	//github.com/cosmos/cosmos-sdk => github.com/osmosis-labs/cosmos-sdk v0.50.6-v26-osmo-3
 
 	// replace as directed by sdk upgrading.md https://github.com/cosmos/cosmos-sdk/blob/393de266c8675dc16cc037c1a15011b1e990975f/UPGRADING.md?plain=1#L713
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
@@ -327,19 +327,14 @@ exclude github.com/gogo/protobuf v1.3.3
 
 // evmOS replacements
 replace (
-	// TODO: merge with store dependency in Osmosis replacements; cherry-pick adding the Copy method
-	cosmossdk.io/store => github.com/MalteHerrmann/cosmos-sdk/store v0.0.0-20240925100621-9a21fb6f400b
+	cosmossdk.io/store => github.com/MalteHerrmann/cosmos-sdk/store v0.0.0-20241001155432-bb4997264516
 
 	// required because it's using the CacheMultiStore.Copy() method which is not available in the original
-	//
-	// TODO: merge with wasmd dependency above; cherry-pick adding the Copy method
-	github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.50.1-0.20240925153347-c4a52206eaf9
+	github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.53.1-0.20241001160509-ecf06d9077fe
 
-	// Point to the latest commit on the `osmo-sdkv50-evmOS-wip` branch
-	// https://github.com/MalteHerrmann/cosmos-sdk/tree/osmo-sdkv50-evmOS-wip
-	//
-	// TODO: merge on top of currently used Osmosis Cosmos SDK tag above; cherry-pick adding the Copy method
-	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
+	// Point to the latest commit on the `osmo-v50.6-v26-osmo3-evmOS` branch
+	// https://github.com/MalteHerrmann/cosmos-sdk/tree/osmo-v50.6-v26-osmo3-evmOS
+	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20241001155432-bb4997264516
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
 
 //// local building

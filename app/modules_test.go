@@ -8,7 +8,7 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sims "github.com/cosmos/cosmos-sdk/testutil/sims"
-	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	"github.com/stretchr/testify/require"
 )
 
