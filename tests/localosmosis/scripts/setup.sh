@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CHAIN_ID=localosmosis
+CHAIN_ID="localosmosis_9009-1"
 OSMOSIS_HOME=$HOME/.osmosisd
 CONFIG_FOLDER=$OSMOSIS_HOME/config
 MONIKER=val
@@ -83,6 +83,9 @@ edit_genesis () {
 
     # Update concentrated-liquidity (enable pool creation)
     dasel put -t bool -f $GENESIS '.app_state.concentratedliquidity.params.is_permissionless_pool_creation_enabled' -v true
+
+    # Update evm denom
+    dasel put -t string -f $GENESIS '.app_state.evm.params.evm_denom' -v "uosmo"
 }
 
 add_genesis_accounts () {
