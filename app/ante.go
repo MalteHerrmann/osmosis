@@ -183,7 +183,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 			}
 		}
 
-		// handle as totally normal Cosmos SDK tx
+		// handle as normal Cosmos SDK tx
 		switch tx.(type) {
 		case sdk.Tx:
 			anteHandler = NewCosmosAnteHandler(options)
@@ -195,11 +195,10 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	}
 }
 
+// NewCosmosAnteHandler creates the decorator chain used for Cosmos transactions.
+//
 // Link to default ante handler used by cosmos sdk:
 // https://github.com/cosmos/cosmos-sdk/blob/v0.43.0/x/auth/ante/ante.go#L41
-// N.B. There is a sister file called `ante_no_seq.go` that is used for e2e testing.
-// It leaves out the `IncrementSequenceDecorator` which is not needed for e2e testing.
-// If you make a change here, make sure to make the same change in `ante_no_seq.go`.
 func NewCosmosAnteHandler(options HandlerOptions) sdk.AnteHandler {
 	mempoolFeeOptions := txfeestypes.NewMempoolFeeOptions(options.appOpts)
 	mempoolFeeDecorator := txfeeskeeper.NewMempoolFeeDecorator(*options.txFeesKeeper, mempoolFeeOptions)
