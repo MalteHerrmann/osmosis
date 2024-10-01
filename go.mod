@@ -31,7 +31,7 @@ require (
 	github.com/cosmos/ibc-go/modules/light-clients/08-wasm v0.1.1-ibc-go-v7.3-wasmvm-v1.5
 	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/cosmos/rosetta v0.50.9
-	github.com/evmos/os v0.0.0-20240925093013-1e43b90ab308
+	github.com/evmos/os v0.0.0-20240927075338-fdb81eba8360
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
@@ -288,7 +288,8 @@ replace (
 	cosmossdk.io/core => cosmossdk.io/core v0.11.0
 
 	// Needs to be replaced due to iavlFastNodeModuleWhitelist feature
-	cosmossdk.io/store => github.com/osmosis-labs/cosmos-sdk/store v0.1.0-alpha.1.0.20240509221435-b8feb2ffb728
+	// TODO: unify with replacement for MalteHerrmann fork?
+	// cosmossdk.io/store => github.com/osmosis-labs/cosmos-sdk/store v0.1.0-alpha.1.0.20240509221435-b8feb2ffb728
 
 	// Using branch osmo/v0.38.x
 	// https://github.com/osmosis-labs/cometbft/releases/tag/v0.37.4-v25-osmo-2
@@ -327,8 +328,15 @@ exclude github.com/gogo/protobuf v1.3.3
 
 // evmOS replacements
 replace (
+	cosmossdk.io/store => github.com/MalteHerrmann/cosmos-sdk/store v0.0.0-20240925100621-9a21fb6f400b
+	// required because it's using the CacheMultiStore.Copy() method which is not available in the original
+	github.com/CosmWasm/wasmd => github.com/MalteHerrmann/wasmd v0.50.1-0.20240925153347-c4a52206eaf9
+
 	// Point to the latest commit on the `osmo-sdkv50-evmOS-wip` branch
 	// https://github.com/MalteHerrmann/cosmos-sdk/tree/osmo-sdkv50-evmOS-wip
 	github.com/cosmos/cosmos-sdk => github.com/MalteHerrmann/cosmos-sdk v0.46.0-beta2.0.20240925100621-9a21fb6f400b
 	github.com/ethereum/go-ethereum => github.com/evmos/go-ethereum v1.10.26-evmos-rc4
+
+//// local building
+//github.com/evmos/os => ../../evmos/os
 )

@@ -25,6 +25,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v25/app"
 	appparams "github.com/osmosis-labs/osmosis/v25/app/params"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 	lockuptypes "github.com/osmosis-labs/osmosis/v25/x/lockup/types"
 	epochtypes "github.com/osmosis-labs/osmosis/x/epochs/types"
 
@@ -40,7 +41,7 @@ type StargateTestSuite struct {
 
 func (suite *StargateTestSuite) SetupTest() {
 	suite.app = app.Setup(false)
-	suite.ctx = suite.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
+	suite.ctx = suite.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: osmoconstants.MainnetChainID, Time: time.Now().UTC()})
 }
 
 func TestStargateTestSuite(t *testing.T) {

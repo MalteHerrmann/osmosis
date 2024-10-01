@@ -17,6 +17,7 @@ import (
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 	smartaccounttypes "github.com/osmosis-labs/osmosis/v25/x/smart-account/types"
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -34,6 +35,11 @@ const SimAppChainID = "simulation-app"
 
 type TestChain struct {
 	*ibctesting.TestChain
+}
+
+// GetOsmosisTestingChainID returns the chainID used for the provided index.
+func GetOsmosisTestingChainID(index int) string {
+	return fmt.Sprintf("%stest_%d-%d", osmoconstants.ChainIDPrefix, osmoconstants.EIP155ChainID, index)
 }
 
 func SetupTestingApp() (ibctesting.TestingApp, map[string]json.RawMessage) {

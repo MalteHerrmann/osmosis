@@ -18,13 +18,13 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v25/app/keepers"
 	"github.com/osmosis-labs/osmosis/v25/app/upgrades"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 
 	concentratedliquidity "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity"
 	concentratedtypes "github.com/osmosis-labs/osmosis/v25/x/concentrated-liquidity/types"
 )
 
 const (
-	mainnetChainID = "osmosis-1"
 	// Edgenet is to function exactly the same as mainnet, and expected
 	// to be state-exported from mainnet state.
 	edgenetChainID = "edgenet"
@@ -34,6 +34,10 @@ const (
 	// E2E chain IDs which we expect to migrate all pools similar to testnet.
 	e2eChainIDA = "osmo-test-a"
 	e2eChainIDB = "osmo-test-b"
+)
+
+var (
+	mainnetChainID = osmoconstants.MainnetChainID
 )
 
 func CreateUpgradeHandler(

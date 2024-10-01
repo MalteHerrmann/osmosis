@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"cosmossdk.io/log"
 
 	"cosmossdk.io/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	mempool1559 "github.com/osmosis-labs/osmosis/v25/x/txfees/keeper/mempool-1559"
 	"github.com/osmosis-labs/osmosis/v25/x/txfees/types"
 
 	storetypes "cosmossdk.io/store/types"
@@ -89,4 +91,9 @@ func (k Keeper) GetFeeTokensStore(ctx sdk.Context) storetypes.KVStore {
 // GetConsParams returns the current consensus parameters from the consensus params store.
 func (k Keeper) GetConsParams(ctx sdk.Context) (*consensustypes.QueryParamsResponse, error) {
 	return k.consensusKeeper.Params(ctx, &consensustypes.QueryParamsRequest{})
+}
+
+// SetBackupFilePath sets the backup file path for the 1559 mempool
+func (k Keeper) SetBackupFilePath() {
+	mempool1559.CurEipState.BackupFilePath = filepath.Join(k.dataDir, mempool1559.BackupFilename)
 }

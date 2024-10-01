@@ -9,6 +9,8 @@ import (
 	transfer "github.com/cosmos/ibc-go/v8/modules/apps/transfer"
 	ibc "github.com/cosmos/ibc-go/v8/modules/core"
 	tendermint "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	"github.com/evmos/os/x/evm"
+	evmosfeemarket "github.com/evmos/os/x/feemarket"
 
 	"cosmossdk.io/x/evidence"
 	"cosmossdk.io/x/upgrade"
@@ -133,4 +135,7 @@ var AppModuleBasics = module.NewBasicManager(
 	tendermint.AppModuleBasic{},
 	auction.AppModuleBasic{},
 	smartaccount.AppModuleBasic{},
+	// evmOS modules
+	evm.AppModuleBasic{},
+	evmosfeemarket.AppModuleBasic{},
 )

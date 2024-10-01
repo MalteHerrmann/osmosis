@@ -28,6 +28,7 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/v25/app/params"
 	v23 "github.com/osmosis-labs/osmosis/v25/app/upgrades/v23" // should be automated to be updated to current version every upgrade
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 	"github.com/osmosis-labs/osmosis/v25/ingest/indexer"
 	"github.com/osmosis-labs/osmosis/v25/ingest/sqs"
 
@@ -162,7 +163,7 @@ var (
 var (
 	//go:embed "osmosis-1-assetlist.json" "osmo-test-5-assetlist.json"
 	assetFS   embed.FS
-	mainnetId = "osmosis-1"
+	mainnetId = osmoconstants.MainnetChainID
 	testnetId = "osmo-test-5"
 )
 
@@ -354,7 +355,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithHomeDir(homeDir).
 		WithViper("OSMOSIS")
 
-	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, osmosis.DefaultNodeHome, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID("osmosis-1"))
+	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, osmosis.DefaultNodeHome, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
 
 	// Allows you to add extra params to your client.toml
 	// gas, gas-price, gas-adjustment, and human-readable-denoms

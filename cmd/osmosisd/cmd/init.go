@@ -31,6 +31,7 @@ import (
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
 	"github.com/osmosis-labs/osmosis/v25/app"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 )
 
 const (
@@ -156,7 +157,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			}
 
 			var toPrint printInfo
-			isMainnet := chainID == "" || chainID == "osmosis-1"
+			isMainnet := chainID == "" || chainID == osmoconstants.MainnetChainID
 			genesisFileDownloadFailed := false
 
 			if isMainnet {
@@ -172,7 +173,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 					chainID = fmt.Sprintf("test-chain-%v", tmrand.Str(6))
 				} else {
 					// Set chainID to osmosis-1 in the case of a blank chainID
-					chainID = "osmosis-1"
+					chainID = osmoconstants.MainnetChainID
 
 					// We dont print the app state for mainnet nodes because it's massive
 					fmt.Println("Not printing app state for mainnet node due to verbosity")

@@ -2,12 +2,13 @@ package ibc_rate_limit_test
 
 import (
 	"fmt"
-	abci "github.com/cometbft/cometbft/abci/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	abci "github.com/cometbft/cometbft/abci/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 
@@ -62,16 +63,16 @@ func (suite *MiddlewareTestSuite) SetupTest() {
 	txfeetypes.ConsensusMinFee = osmomath.ZeroDec()
 	suite.Setup()
 	ibctesting.DefaultTestingAppInit = osmosisibctesting.SetupTestingApp
-	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 3)
+	suite.coordinator = osmosisibctesting.NewCoordinator(suite.T(), 3)
 	suite.chainA = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(1)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(1)),
 	}
 	// Remove epochs to prevent  minting
 	err := suite.chainA.MoveEpochsToTheFuture()
 	suite.Require().NoError(err)
 	// Create second chain
 	suite.chainB = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(2)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(2)),
 	}
 	suite.path = NewTransferPath(suite.chainA, suite.chainB)
 	err = suite.chainB.MoveEpochsToTheFuture()
@@ -79,7 +80,7 @@ func (suite *MiddlewareTestSuite) SetupTest() {
 	suite.coordinator.Setup(suite.path)
 	// setup a third chain
 	suite.chainC = &osmosisibctesting.TestChain{
-		TestChain: suite.coordinator.GetChain(ibctesting.GetChainID(3)),
+		TestChain: suite.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(3)),
 	}
 	suite.pathAC = NewTransferPath(suite.chainA, suite.chainC)
 	err = suite.chainC.MoveEpochsToTheFuture()

@@ -16,11 +16,12 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/v25/app"
 	appparams "github.com/osmosis-labs/osmosis/v25/app/params"
+	osmoconstants "github.com/osmosis-labs/osmosis/v25/constants"
 )
 
 func CreateTestInput() (*app.OsmosisApp, sdk.Context) {
 	osmosis := app.Setup(false)
-	ctx := osmosis.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
+	ctx := osmosis.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: osmoconstants.MainnetChainID, Time: time.Now().UTC()})
 	return osmosis, ctx
 }
 
