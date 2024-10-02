@@ -78,6 +78,7 @@ import (
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
 
 	evmosserver "github.com/evmos/os/server"
+	evmosserverconfig "github.com/evmos/os/server/config"
 )
 
 type AssetList struct {
@@ -662,6 +663,11 @@ func initAppConfig() (string, interface{}) {
 		OTELConfig osmosis.OTELConfig `mapstructure:"otel"`
 
 		WasmConfig wasmtypes.WasmConfig `mapstructure:"wasm"`
+
+		// evmOS configuration
+		EVM     evmosserverconfig.EVMConfig     `mapstructure:"evm"`
+		JSONRPC evmosserverconfig.JSONRPCConfig `mapstructure:"jsonrpc"`
+		TLS     evmosserverconfig.TLSConfig     `mapstructure:"tls"`
 	}
 
 	DefaultOsmosisMempoolConfig := OsmosisMempoolConfig{
@@ -687,7 +693,17 @@ func initAppConfig() (string, interface{}) {
 
 	wasmCfg := wasmtypes.DefaultWasmConfig()
 
-	OsmosisAppCfg := CustomAppConfig{Config: *srvCfg, OsmosisMempoolConfig: memCfg, SidecarQueryServerConfig: sqsCfg, IndexerConfig: indexCfg, WasmConfig: wasmCfg}
+	OsmosisAppCfg := CustomAppConfig{
+		Config:                   *srvCfg,
+		OsmosisMempoolConfig:     memCfg,
+		SidecarQueryServerConfig: sqsCfg,
+		IndexerConfig:            indexCfg,
+		WasmConfig:               wasmCfg,
+		// using the evmOS default configuration
+		EVM:     *evmosserverconfig.DefaultEVMConfig(),
+		JSONRPC: *evmosserverconfig.DefaultJSONRPCConfig(),
+		TLS:     *evmosserverconfig.DefaultTLSConfig(),
+	}
 
 	OsmosisAppTemplate := serverconfig.DefaultConfigTemplate + `
 ###############################################################################
@@ -772,7 +788,8 @@ service-name = "{{ .OTELConfig.ServiceName }}"
 ###############################################################################
 ###                            Wasm Configuration                           ###
 ###############################################################################
-` + wasmtypes.DefaultConfigTemplate()
+` + wasmtypes.DefaultConfigTemplate() +
+		evmosserverconfig.DefaultEVMConfigTemplate
 
 	return OsmosisAppTemplate, OsmosisAppCfg
 }
