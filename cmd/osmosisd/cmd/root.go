@@ -76,6 +76,8 @@ import (
 	"github.com/joho/godotenv"
 
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
+
+	evmosserver "github.com/evmos/os/server"
 )
 
 type AssetList struct {
@@ -809,7 +811,10 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 		pruning.Cmd(newApp, osmosis.DefaultNodeHome),
 	)
 
-	server.AddCommands(rootCmd, osmosis.DefaultNodeHome, newApp, createOsmosisAppAndExport, addModuleInitFlags)
+	// NOTE: using the evmOS server commands here, which extend the Cosmos SDK by starting the JSON-RPC server
+	startOptions := evmosserver.NewDefaultStartOptions(newApp, osmosis.DefaultNodeHome)
+	evmosserver.AddCommands(rootCmd, startOptions, createOsmosisAppAndExport, addModuleInitFlags)
+
 	server.AddTestnetCreatorCommand(rootCmd, newTestnetApp, addModuleInitFlags)
 
 	for i, cmd := range rootCmd.Commands() {
