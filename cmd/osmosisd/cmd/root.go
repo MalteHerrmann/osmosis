@@ -52,7 +52,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -77,6 +76,7 @@ import (
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
 
 	evmosclient "github.com/evmos/os/client"
+	evmosdebugcmd "github.com/evmos/os/client/debug"
 	evmosserver "github.com/evmos/os/server"
 	evmosserverconfig "github.com/evmos/os/server/config"
 )
@@ -799,7 +799,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
-	debugCmd := debug.Cmd()
+	debugCmd := evmosdebugcmd.Cmd()
 	debugCmd.AddCommand(ConvertBech32Cmd())
 	debugCmd.AddCommand(DebugProtoMarshalledBytes())
 
