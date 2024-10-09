@@ -31,7 +31,7 @@ require (
 	github.com/cosmos/ibc-go/modules/light-clients/08-wasm v0.4.2-0.20240730185033-ccd4dc278e72
 	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/cosmos/rosetta v0.50.9
-	github.com/evmos/os v0.0.0-20240927075338-fdb81eba8360
+	github.com/evmos/os v0.0.0-20241009115901-78d16bd7986c
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1

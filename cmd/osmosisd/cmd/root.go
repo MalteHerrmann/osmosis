@@ -54,7 +54,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -77,6 +76,7 @@ import (
 
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
 
+	evmosclient "github.com/evmos/os/client"
 	evmosserver "github.com/evmos/os/server"
 	evmosserverconfig "github.com/evmos/os/server/config"
 )
@@ -874,8 +874,14 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 		server.StatusCommand(),
 		queryCommand(),
 		txCommand(tempApp.ModuleBasics),
-		keys.Commands(),
 	)
+
+	// add keys commands from evmOS which enhance the SDK keys commands to be able to support Eth keys
+	rootCmd.AddCommand(
+		// NOTE: passing `false` here to default to standard Cosmos keys with the option of adding Eth keys
+		evmosclient.KeyCommands(osmosis.DefaultNodeHome, false),
+	)
+
 	rootCmd.AddCommand(CmdListQueries(rootCmd))
 	// add rosetta
 	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
