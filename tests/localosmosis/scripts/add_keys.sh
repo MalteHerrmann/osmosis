@@ -12,5 +12,6 @@ echo "cream sport mango believe inhale text fish rely elegant below earth april 
 echo "index light average senior silent limit usual local involve delay update rack cause inmate wall render magnet common feature laundry exact casual resource hundred" | osmosisd keys add lo-test9 --recover --keyring-backend test
 echo "prefer forget visit mistake mixture feel eyebrow autumn shop pair address airport diesel street pass vague innocent poem method awful require hurry unhappy shoulder" | osmosisd keys add lo-test10 --recover --keyring-backend test
 
-# TODO: add some Eth keys
-#echo ""
+# Eth style keys
+echo "amazing disagree express party visa involve season include lawsuit release diet void rally ocean urge hard wish physical enemy salad festival history coast sword" | osmosisd keys add lo-test-eth1 --recover --keyring-backend test --key-type eth_secp256k1
+echo "culture cook pear flat wink over very sick kite jungle liar hundred dash print parent flag pottery gallery bar thrive chunk doctor update shaft" | osmosisd keys add lo-test-eth2 --recover --keyring-backend test --key-type eth_secp256k1
