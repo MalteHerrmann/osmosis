@@ -16,6 +16,7 @@ import (
 
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	cltypes "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/types"
 	gammtypes "github.com/osmosis-labs/osmosis/v26/x/gamm/types"
 	gammmigration "github.com/osmosis-labs/osmosis/v26/x/gamm/types/migration"
@@ -37,12 +38,15 @@ type clPoolCreationInfo struct {
 }
 
 const (
-	mainnetChainID = "osmosis-1"
-	e2eChainA      = "osmo-test-a"
-	e2eChainB      = "osmo-test-b"
+	e2eChainA = "osmo-test-a"
+	e2eChainB = "osmo-test-b"
 )
 
-var notEnoughLiquidityForSwapErr = errorsmod.Wrapf(gammtypes.ErrInvalidMathApprox, "token amount must be positive")
+var (
+	mainnetChainID = osmoconstants.MainnetChainID
+
+	notEnoughLiquidityForSwapErr = errorsmod.Wrapf(gammtypes.ErrInvalidMathApprox, "token amount must be positive")
+)
 
 func CreateUpgradeHandler(
 	mm *module.Manager,

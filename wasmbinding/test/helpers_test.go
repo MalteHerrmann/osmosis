@@ -18,12 +18,13 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/v26/app"
 	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 func CreateTestInput() (*app.OsmosisApp, sdk.Context, string) {
 	homeDir := fmt.Sprintf("%d", rand.Int())
 	osmosis := app.SetupWithCustomHome(false, homeDir)
-	ctx := osmosis.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
+	ctx := osmosis.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: osmoconstants.MainnetChainID, Time: time.Now().UTC()})
 	return osmosis, ctx, homeDir
 }
 

@@ -2,6 +2,7 @@ package v8
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 
 	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 )
@@ -11,7 +12,7 @@ import (
 func RunForkLogic(ctx sdk.Context, appKeepers *keepers.AppKeepers) {
 	// Only proceed with v8 for mainnet, testnets need not adjust their pool incentives or unbonding.
 	// https://github.com/osmosis-labs/osmosis/issues/1609
-	if ctx.ChainID() != "osmosis-1" {
+	if ctx.ChainID() != osmoconstants.MainnetChainID {
 		return
 	}
 

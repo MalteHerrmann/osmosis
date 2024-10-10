@@ -27,6 +27,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v26/app"
 	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	lockuptypes "github.com/osmosis-labs/osmosis/v26/x/lockup/types"
 	epochtypes "github.com/osmosis-labs/osmosis/x/epochs/types"
 
@@ -44,7 +45,7 @@ type StargateTestSuite struct {
 func (suite *StargateTestSuite) SetupTestInternal() {
 	suite.HomeDir = fmt.Sprintf("%d", rand.Int())
 	suite.app = app.SetupWithCustomHome(false, suite.HomeDir)
-	suite.ctx = suite.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
+	suite.ctx = suite.app.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: osmoconstants.MainnetChainID, Time: time.Now().UTC()})
 }
 
 func (suite *StargateTestSuite) TearDownTestInternal() {

@@ -11,6 +11,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 	"github.com/osmosis-labs/osmosis/v26/app/upgrades"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	concentratedliquidity "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity"
 	concentratedtypes "github.com/osmosis-labs/osmosis/v26/x/concentrated-liquidity/types"
 	cwpooltypes "github.com/osmosis-labs/osmosis/v26/x/cosmwasmpool/types"
@@ -19,10 +20,13 @@ import (
 )
 
 const (
-	mainnetChainID = "osmosis-1"
 	// Edgenet is to function exactly the same as mainnet, and expected
 	// to be state-exported from mainnet state.
 	edgenetChainID = "edgenet"
+)
+
+var (
+	mainnetChainID = osmoconstants.MainnetChainID
 )
 
 func CreateUpgradeHandler(

@@ -74,5 +74,7 @@ EXPOSE 1317
 # Note: uncomment the line below if you need pprof in localosmosis
 # We disable it by default in out main Dockerfile for security reasons
 # EXPOSE 6060
+# Note: 8545 is the default JSON-RPC port for EVM transactions
+EXPOSE 8545
 
 ENTRYPOINT ["osmosisd"]

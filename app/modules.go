@@ -108,6 +108,12 @@ import (
 	valsetprefmodule "github.com/osmosis-labs/osmosis/v26/x/valset-pref/valpref-module"
 	"github.com/osmosis-labs/osmosis/x/epochs"
 	epochstypes "github.com/osmosis-labs/osmosis/x/epochs/types"
+
+	// evmOS imports
+	"github.com/evmos/os/x/evm"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	"github.com/evmos/os/x/feemarket"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 // moduleAccountPermissions defines module account permissions
@@ -142,6 +148,10 @@ var moduleAccountPermissions = map[string][]string{
 	cosmwasmpooltypes.ModuleName:             nil,
 	auctiontypes.ModuleName:                  nil,
 	smartaccounttypes.ModuleName:             nil,
+
+	// evmOS modules
+	evmtypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+	feemarkettypes.ModuleName: nil,
 }
 
 // appModules return modules to initialize module manager.
@@ -209,6 +219,10 @@ func appModules(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		auction.NewAppModule(appCodec, *app.AuctionKeeper),
 		smartaccount.NewAppModule(appCodec, *app.SmartAccountKeeper),
+
+		// evmOS modules
+		evm.NewAppModule(app.EVMKeeper, app.AccountKeeper, app.GetSubspace(evmtypes.ModuleName)),
+		feemarket.NewAppModule(app.FeemarketKeeper, app.GetSubspace(feemarkettypes.ModuleName)),
 	}
 }
 
@@ -222,6 +236,9 @@ func orderBeginBlockers(allModuleNames []string) []string {
 	// module account, which is then distributed to stakers. If staking comes before epochs, then the
 	// funds will not be distributed to stakers as expected.
 	ord.FirstElements(epochstypes.ModuleName, capabilitytypes.ModuleName)
+
+	// TODO (@MalteHerrmann): verify if the order is correct here
+	ord.Sequence(evmtypes.ModuleName, feemarkettypes.ModuleName)
 
 	// Staking ordering
 	// TODO: Perhaps this can be relaxed, left to future work to analyze.
@@ -244,7 +261,10 @@ func OrderEndBlockers(allModuleNames []string) []string {
 
 	// Staking must be after gov.
 	ord.FirstElements(govtypes.ModuleName)
-	ord.LastElements(stakingtypes.ModuleName)
+
+	// TODO (@MalteHerrmann): Check if this is correct
+	// NOTE: feemarket module should go last to get true block gas used
+	ord.LastElements(stakingtypes.ModuleName, feemarkettypes.ModuleName)
 
 	// only Osmosis modules with endblock code are: twap, crisis, govtypes, staking
 	// we don't care about the relative ordering between them.
@@ -277,6 +297,14 @@ func OrderInitGenesis(allModuleNames []string) []string {
 		twaptypes.ModuleName,
 		txfeestypes.ModuleName,
 		smartaccounttypes.ModuleName,
+
+		// evmOS modules
+		//
+		// NOTE: feemarket module needs to be initialized before genutil, because gentx transactions use
+		// MinGasPriceDecorator.AnteHandle
+		feemarkettypes.ModuleName,
+		evmtypes.ModuleName,
+
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		paramstypes.ModuleName,

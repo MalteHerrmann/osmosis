@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/osmosis-labs/osmosis/v26/app"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 const (
@@ -109,7 +110,7 @@ func environmentNameToPath(environmentName string) (string, error) {
 func clientSettingsFromEnv(cmd *cobra.Command, environmentName, chainId string) error {
 	envConfigs := map[string]map[string]string{
 		EnvMainnet: {
-			flags.FlagChainID:       "osmosis-1",
+			flags.FlagChainID:       osmoconstants.MainnetChainID,
 			flags.FlagNode:          "https://rpc.osmosis.zone:443",
 			flags.FlagBroadcastMode: "block",
 		},

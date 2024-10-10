@@ -18,7 +18,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/osmosis-labs/osmosis/osmoutils"
-	"github.com/osmosis-labs/osmosis/v26/app/keepers"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 )
 
 type OTELConfig struct {
@@ -30,6 +30,8 @@ type OTELConfig struct {
 // testing requirements.
 func DefaultConfig() network.Config {
 	encCfg := MakeEncodingConfig()
+	testChainID := fmt.Sprintf("osmosistest_%d-%d", osmoconstants.EIP155ChainID, osmoconstants.ChainIDSuffix)
+	genesisState := NewDefaultGenesisState()
 
 	return network.Config{
 		Codec:             encCfg.Marshaler,
@@ -37,10 +39,10 @@ func DefaultConfig() network.Config {
 		LegacyAmino:       encCfg.Amino,
 		InterfaceRegistry: encCfg.InterfaceRegistry,
 		AccountRetriever:  authtypes.AccountRetriever{},
-		AppConstructor:    NewAppConstructor("osmosis-code-test"),
-		GenesisState:      keepers.AppModuleBasics.DefaultGenesis(encCfg.Marshaler),
+		AppConstructor:    NewAppConstructor(testChainID),
+		GenesisState:      genesisState,
 		TimeoutCommit:     1 * time.Second / 2,
-		ChainID:           "osmosis-code-test",
+		ChainID:           testChainID,
 		NumValidators:     1,
 		BondDenom:         sdk.DefaultBondDenom,
 		MinGasPrices:      fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
