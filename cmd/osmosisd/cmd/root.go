@@ -356,7 +356,9 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithBroadcastMode(flags.BroadcastSync).
 		WithHomeDir(homeDir).
-		WithViper("OSMOSIS")
+		WithViper("OSMOSIS").
+		// evmOS specific setup to add eth_secp256k1 curve
+		WithKeyringOptions(ExtendedKeyringOption())
 
 	tempDir := tempDir()
 	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, tempDir, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))

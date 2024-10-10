@@ -508,12 +508,8 @@ github.com/envoyproxy/go-control-plane v0.10.2-0.20220325020618-49ff273808a1/go.
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/evmos/go-ethereum v1.10.26-evmos-rc4 h1:vwDVMScuB2KSu8ze5oWUuxm6v3bMUp6dL3PWvJNJY+I=
 github.com/evmos/go-ethereum v1.10.26-evmos-rc4/go.mod h1:/6CsT5Ceen2WPLI/oCA3xMcZ5sWMF/D46SjM/ayY0Oo=
-github.com/evmos/os v0.0.0-20240927075338-fdb81eba8360 h1:Nh/+VeCAJJUE0h5IK7dttHBE7baScLhDUipqmqybYi8=
-github.com/evmos/os v0.0.0-20240927075338-fdb81eba8360/go.mod h1:uQQyppk8z2C7Ypk/zj8/wnJSrf74rY8cXLzsD8F1tEE=
-github.com/evmos/os v0.0.0-20241009115901-78d16bd7986c h1:X9ad9QgE7dQ8OojBqM2l94AWf/+2x6l+oID5/IchYgE=
-github.com/evmos/os v0.0.0-20241009115901-78d16bd7986c/go.mod h1:uQQyppk8z2C7Ypk/zj8/wnJSrf74rY8cXLzsD8F1tEE=
-github.com/evmos/os v0.0.0-20241009143447-f3eb41f9bc89 h1:OCW7jSq4Asjy9UzCwwz3xhjuwYCYg7lL+Dwb7T5h9nk=
-github.com/evmos/os v0.0.0-20241009143447-f3eb41f9bc89/go.mod h1:uQQyppk8z2C7Ypk/zj8/wnJSrf74rY8cXLzsD8F1tEE=
+github.com/evmos/os v0.0.0-20241010104529-06db7a339120 h1:CB1m16lzqknA4hAici334AXD+m/sgUiPB6JQ77F+R2U=
+github.com/evmos/os v0.0.0-20241010104529-06db7a339120/go.mod h1:uQQyppk8z2C7Ypk/zj8/wnJSrf74rY8cXLzsD8F1tEE=
 github.com/evmos/os/example_chain v0.0.0-20240924163020-b2a4187dad50 h1:zWJYHc0WXE5YnuzYJnUzjMwuloxSz5ALCoNSzcuhKsA=
 github.com/evmos/os/example_chain v0.0.0-20240924163020-b2a4187dad50/go.mod h1:+SPMqw9wtbWO3jG02uLbLtVVjMHBldmXTN51kxbWqJ8=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
