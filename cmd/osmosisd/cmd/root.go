@@ -52,9 +52,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -77,6 +75,8 @@ import (
 
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
 
+	evmosclient "github.com/evmos/os/client"
+	evmosdebugcmd "github.com/evmos/os/client/debug"
 	evmosserver "github.com/evmos/os/server"
 	evmosserverconfig "github.com/evmos/os/server/config"
 )
@@ -356,7 +356,9 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithBroadcastMode(flags.BroadcastSync).
 		WithHomeDir(homeDir).
-		WithViper("OSMOSIS")
+		WithViper("OSMOSIS").
+		// evmOS specific setup to add eth_secp256k1 curve
+		WithKeyringOptions(ExtendedKeyringOption())
 
 	tempDir := tempDir()
 	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, tempDir, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
@@ -799,7 +801,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
-	debugCmd := debug.Cmd()
+	debugCmd := evmosdebugcmd.Cmd()
 	debugCmd.AddCommand(ConvertBech32Cmd())
 	debugCmd.AddCommand(DebugProtoMarshalledBytes())
 
@@ -874,8 +876,14 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 		server.StatusCommand(),
 		queryCommand(),
 		txCommand(tempApp.ModuleBasics),
-		keys.Commands(),
 	)
+
+	// add keys commands from evmOS which enhance the SDK keys commands to be able to support Eth keys
+	rootCmd.AddCommand(
+		// NOTE: passing `false` here to default to standard Cosmos keys with the option of adding Eth keys
+		evmosclient.KeyCommands(osmosis.DefaultNodeHome, false),
+	)
+
 	rootCmd.AddCommand(CmdListQueries(rootCmd))
 	// add rosetta
 	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
