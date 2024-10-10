@@ -106,7 +106,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 
@@ -115,6 +114,7 @@ import (
 	minttypes "github.com/osmosis-labs/osmosis/v26/x/mint/types"
 	protorevtypes "github.com/osmosis-labs/osmosis/v26/x/protorev/types"
 
+	osmoante "github.com/osmosis-labs/osmosis/v26/ante"
 	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 	"github.com/osmosis-labs/osmosis/v26/app/upgrades"
 	v10 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v10"
@@ -601,7 +601,7 @@ func NewOsmosisApp(
 		app.BankKeeper,
 		app.TxFeesKeeper,
 		app.GAMMKeeper,
-		ante.DefaultSigVerificationGasConsumer,
+		osmoante.ExtendedSigVerificationGasConsumer,
 		encodingConfig.TxConfig.SignModeHandler(),
 		app.IBCKeeper,
 		BlockSDKAnteHandlerParams{
