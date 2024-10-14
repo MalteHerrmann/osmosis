@@ -4,7 +4,7 @@ import (
 	"github.com/osmosis-labs/osmosis/v26/app/keepers"
 	"github.com/osmosis-labs/osmosis/v26/app/params"
 
-	"github.com/cosmos/cosmos-sdk/std"
+	evmosenccodec "github.com/evmos/os/encoding/codec"
 )
 
 var encodingConfig params.EncodingConfig = MakeEncodingConfig()
@@ -16,8 +16,12 @@ func GetEncodingConfig() params.EncodingConfig {
 // MakeEncodingConfig creates an EncodingConfig.
 func MakeEncodingConfig() params.EncodingConfig {
 	encodingConfig := params.MakeEncodingConfig()
-	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+
+	// NOTE: the evmOS functions also register the standard Cosmos SDK interfaces and codecs
+	evmosenccodec.RegisterLegacyAminoCodec(encodingConfig.Amino)
+	evmosenccodec.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+
 	keepers.AppModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+
 	return encodingConfig
 }
