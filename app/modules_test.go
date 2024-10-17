@@ -8,12 +8,13 @@ import (
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sims "github.com/cosmos/cosmos-sdk/testutil/sims"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	"github.com/stretchr/testify/require"
 )
 
 func TestOrderEndBlockers_Determinism(t *testing.T) {
 	db := dbm.NewMemDB()
-	app := NewOsmosisApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, sims.EmptyAppOptions{}, EmptyWasmOpts, baseapp.SetChainID("osmosis-1"))
+	app := NewOsmosisApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, sims.EmptyAppOptions{}, EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
 
 	for i := 0; i < 1000; i++ {
 		a := OrderEndBlockers(app.mm.ModuleNames())

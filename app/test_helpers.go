@@ -11,6 +11,7 @@ import (
 	cosmosdb "github.com/cosmos/cosmos-db"
 
 	"github.com/osmosis-labs/osmosis/osmomath"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 
 	sdkmath "cosmossdk.io/math"
 	tmtypes "github.com/cometbft/cometbft/types"
@@ -118,7 +119,7 @@ var defaultGenesisStatebytes = []byte{}
 
 // SetupWithCustomHome initializes a new OsmosisApp with a custom home directory
 func SetupWithCustomHome(isCheckTx bool, dir string) *OsmosisApp {
-	return SetupWithCustomHomeAndChainId(isCheckTx, dir, "osmosis-1")
+	return SetupWithCustomHomeAndChainId(isCheckTx, dir, osmoconstants.MainnetChainID)
 }
 
 func SetupWithCustomHomeAndChainId(isCheckTx bool, dir, chainId string) *OsmosisApp {
@@ -167,7 +168,7 @@ func SetupTestingAppWithLevelDb(isCheckTx bool) (app *OsmosisApp, cleanupFn func
 		panic(err)
 	}
 
-	app = NewOsmosisApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, sims.EmptyAppOptions{}, EmptyWasmOpts, baseapp.SetChainID("osmosis-1"))
+	app = NewOsmosisApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, sims.EmptyAppOptions{}, EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
 	if !isCheckTx {
 		genesisState := GenesisStateWithValSet(app)
 		stateBytes, err := json.MarshalIndent(genesisState, "", " ")
@@ -180,7 +181,7 @@ func SetupTestingAppWithLevelDb(isCheckTx bool) (app *OsmosisApp, cleanupFn func
 				Validators:      []abci.ValidatorUpdate{},
 				ConsensusParams: sims.DefaultConsensusParams,
 				AppStateBytes:   stateBytes,
-				ChainId:         "osmosis-1",
+				ChainId:         osmoconstants.MainnetChainID,
 			},
 		)
 		if err != nil {

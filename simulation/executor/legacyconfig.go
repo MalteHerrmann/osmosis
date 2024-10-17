@@ -11,11 +11,12 @@ import (
 	cosmosdb "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	"github.com/osmosis-labs/osmosis/v26/simulation/executor/internal/stats"
 	"github.com/osmosis-labs/osmosis/v26/simulation/simtypes/simlogger"
 )
 
-const SimAppChainID = "osmosis-test"
+var SimAppChainID = fmt.Sprintf("osmosissimtest_%d-%d", osmoconstants.EIP155ChainID, osmoconstants.ChainIDSuffix)
 
 // List of available flags for the simulator
 var (

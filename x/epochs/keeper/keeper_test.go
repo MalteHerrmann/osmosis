@@ -6,14 +6,14 @@ import (
 
 	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	cdcutil "github.com/cosmos/cosmos-sdk/codec/testutil"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/stretchr/testify/suite"
 
-	cdcutil "github.com/cosmos/cosmos-sdk/codec/testutil"
-
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	epochskeeper "github.com/osmosis-labs/osmosis/x/epochs/keeper"
 	"github.com/osmosis-labs/osmosis/x/epochs/types"
 )
@@ -51,7 +51,7 @@ func Setup() (sdk.Context, *epochskeeper.Keeper) {
 	ctx := testutil.DefaultContext(epochsStoreKey, storetypes.NewTransientStoreKey("transient_test"))
 	epochsKeeper := epochskeeper.NewKeeper(epochsStoreKey)
 	epochsKeeper = epochsKeeper.SetHooks(types.NewMultiEpochHooks())
-	ctx.WithBlockHeight(1).WithChainID("osmosis-1").WithBlockTime(time.Now().UTC())
+	ctx.WithBlockHeight(1).WithChainID(osmoconstants.MainnetChainID).WithBlockTime(time.Now().UTC())
 	epochsKeeper.InitGenesis(ctx, *types.DefaultGenesis())
 	SetEpochStartTime(ctx, epochsKeeper)
 	return ctx, epochsKeeper

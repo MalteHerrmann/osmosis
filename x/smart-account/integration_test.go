@@ -58,9 +58,9 @@ func (s *AuthenticatorSuite) SetupTest() {
 	ibctesting.DefaultTestingAppInit = osmosisibctesting.SetupTestingApp
 
 	// Here we create the app using ibctesting
-	s.coordinator = ibctesting.NewCoordinator(s.T(), 1)
+	s.coordinator = osmosisibctesting.NewCoordinator(s.T(), 1)
 	s.chainA = &osmosisibctesting.TestChain{
-		TestChain: s.coordinator.GetChain(ibctesting.GetChainID(1)),
+		TestChain: s.coordinator.GetChain(osmosisibctesting.GetOsmosisTestingChainID(1)),
 	}
 	s.app = s.chainA.GetOsmosisApp()
 	s.EncodingConfig = app.MakeEncodingConfig()

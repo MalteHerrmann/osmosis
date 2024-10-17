@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/runtime"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -42,6 +43,7 @@ import (
 	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
+	"github.com/spf13/cast"
 
 	appparams "github.com/osmosis-labs/osmosis/v26/app/params"
 	"github.com/osmosis-labs/osmosis/v26/x/cosmwasmpool"
@@ -119,6 +121,14 @@ import (
 	auctiontypes "github.com/skip-mev/block-sdk/v2/x/auction/types"
 
 	storetypes "cosmossdk.io/store/types"
+
+	// evmOS imports
+	evmossrvflags "github.com/evmos/os/server/flags"
+	evmoscorevm "github.com/evmos/os/x/evm/core/vm"
+	evmkeeper "github.com/evmos/os/x/evm/keeper"
+	evmtypes "github.com/evmos/os/x/evm/types"
+	feemarketkeeper "github.com/evmos/os/x/feemarket/keeper"
+	feemarkettypes "github.com/evmos/os/x/feemarket/types"
 )
 
 const (
@@ -190,6 +200,10 @@ type AppKeepers struct {
 
 	// BlockSDK
 	AuctionKeeper *auctionkeeper.Keeper
+
+	// evmOS Keepers
+	EVMKeeper       *evmkeeper.Keeper
+	FeemarketKeeper feemarketkeeper.Keeper
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -659,6 +673,42 @@ func (appKeepers *AppKeepers) InitNormalKeepers(
 	appKeepers.GovKeeper.SetLegacyRouter(govRouter)
 }
 
+func (appKeepers *AppKeepers) InitEvmOSKeepers(
+	appCodec codec.Codec,
+	appOpts servertypes.AppOptions,
+) {
+	appKeepers.FeemarketKeeper = feemarketkeeper.NewKeeper(
+		appCodec,
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		appKeepers.keys[feemarkettypes.StoreKey],
+		appKeepers.tkeys[feemarkettypes.TransientKey],
+		appKeepers.GetSubspace(feemarkettypes.ModuleName),
+	)
+
+	// get the EVM tracer option from the app options
+	tracer := cast.ToString(appOpts.Get(evmossrvflags.EVMTracer))
+
+	appKeepers.EVMKeeper = evmkeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[evmtypes.StoreKey],
+		appKeepers.tkeys[evmtypes.TransientKey],
+		authtypes.NewModuleAddress(govtypes.ModuleName),
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		appKeepers.StakingKeeper,
+		appKeepers.FeemarketKeeper,
+		nil, // NOTE: we're passing `nil` here for the ERC-20 keeper until adding the ERC-20 module and STR v2
+		tracer,
+		appKeepers.GetSubspace(evmtypes.ModuleName),
+	)
+
+	// NOTE: we are just adding the default Ethereum precompiles for now.
+	// Additional ones can be added if desired.
+	appKeepers.EVMKeeper.WithStaticPrecompiles(
+		evmoscorevm.PrecompiledContractsBerlin,
+	)
+}
+
 // WireICS20PreWasmKeeper Create the IBC Transfer Stack from bottom to top:
 //
 // * SendPacket. Originates from the transferKeeper and goes up the stack:
@@ -830,6 +880,10 @@ func (appKeepers *AppKeepers) initParamsKeeper(appCodec codec.BinaryCodec, legac
 	paramsKeeper.Subspace(txfeestypes.ModuleName)
 	paramsKeeper.Subspace(auctiontypes.ModuleName)
 
+	// evmOS subspaces
+	paramsKeeper.Subspace(evmtypes.ModuleName).WithKeyTable(evmtypes.ParamKeyTable())
+	paramsKeeper.Subspace(feemarkettypes.ModuleName).WithKeyTable(feemarkettypes.ParamKeyTable())
+
 	return paramsKeeper
 }
 
@@ -953,5 +1007,9 @@ func KVStoreKeys() []string {
 		cosmwasmpooltypes.StoreKey,
 		auctiontypes.StoreKey,
 		smartaccounttypes.StoreKey,
+
+		// evmOS keys
+		evmtypes.StoreKey,
+		feemarkettypes.StoreKey,
 	}
 }

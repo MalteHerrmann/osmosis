@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CHAIN_ID=localosmosis
+CHAIN_ID="localosmosis_9009-1"
 OSMOSIS_HOME=$HOME/.osmosisd
 CONFIG_FOLDER=$OSMOSIS_HOME/config
 MONIKER=val
@@ -83,6 +83,9 @@ edit_genesis () {
 
     # Update concentrated-liquidity (enable pool creation)
     dasel put -t bool -f $GENESIS '.app_state.concentratedliquidity.params.is_permissionless_pool_creation_enabled' -v true
+
+    # Update evm denom
+    dasel put -t string -f $GENESIS '.app_state.evm.params.evm_denom' -v "uosmo"
 }
 
 add_genesis_accounts () {
@@ -100,6 +103,9 @@ add_genesis_accounts () {
     osmosisd add-genesis-account osmo1myv43sqgnj5sm4zl98ftl45af9cfzk7nhjxjqh 100000000000uosmo,100000000000uion,100000000000stake,100000000000uusdc,100000000000uweth --home $OSMOSIS_HOME
     osmosisd add-genesis-account osmo14gs9zqh8m49yy9kscjqu9h72exyf295afg6kgk 100000000000uosmo,100000000000uion,100000000000stake,100000000000uusdc,100000000000uweth --home $OSMOSIS_HOME
     osmosisd add-genesis-account osmo1jllfytsz4dryxhz5tl7u73v29exsf80vz52ucc 1000000000000uosmo,1000000000000uion,1000000000000stake,1000000000000uusdc,1000000000000uweth --home $OSMOSIS_HOME
+    # eth keys
+    osmosisd add-genesis-account osmo1jjqhhhzw0aj708u3dj905tjjp3crawps9stpdz 1000000000000uosmo,1000000000000uion,1000000000000stake,1000000000000uusdc,1000000000000uweth --home $OSMOSIS_HOME
+    osmosisd add-genesis-account osmo1dkpu93rvcfmh9xwjd4cd0569vhlcqdt7dfhxxj 1000000000000uosmo,1000000000000uion,1000000000000stake,1000000000000uusdc,1000000000000uweth --home $OSMOSIS_HOME
 
     echo $MNEMONIC | osmosisd keys add $MONIKER --recover --keyring-backend=test --home $OSMOSIS_HOME
     echo $POOLSMNEMONIC | osmosisd keys add pools --recover --keyring-backend=test --home $OSMOSIS_HOME
@@ -144,6 +150,20 @@ enable_cors () {
     dasel put -t string -f $CONFIG_FOLDER/app.toml -v "true" '.osmosis-sqs.route-cache-enabled'
 
     dasel put -t string -f $CONFIG_FOLDER/app.toml -v "redis" '.osmosis-sqs.db-host'
+}
+
+enable_evm () {
+    # Enable the JSON-RPC for EVM transactions
+    dasel put -t string -f $CONFIG_FOLDER/app.toml -v "true" '.json-rpc.enable'
+
+    # Set API URLs to 0.0.0.0
+    dasel put -t string -f $CONFIG_FOLDER/app.toml -v "0.0.0.0:8545" '.json-rpc.address'
+    dasel put -t string -f $CONFIG_FOLDER/app.toml -v "0.0.0.0:8546" '.json-rpc.ws-address'
+    dasel put -t string -f $CONFIG_FOLDER/app.toml -v "0.0.0.0:6065" '.json-rpc.metrics-address'
+
+    # Enable selected API endpoints for EVM transactions
+    # check references here: https://docs.evmos.org/develop/api/ethereum-json-rpc#json-rpc-over-http
+    dasel put -t string -f $CONFIG_FOLDER/app.toml -v "eth,debug,web3" '.json-rpc.api'
 }
 
 run_with_retries() {
@@ -204,6 +224,7 @@ then
     add_genesis_accounts
     edit_config
     enable_cors
+    enable_evm
 fi
 
 osmosisd start --home $OSMOSIS_HOME &

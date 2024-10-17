@@ -9,6 +9,7 @@ import (
 
 	"github.com/osmosis-labs/osmosis/v26/app"
 	"github.com/osmosis-labs/osmosis/v26/app/apptesting"
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	"github.com/osmosis-labs/osmosis/v26/x/lockup/keeper"
 )
 
@@ -36,7 +37,7 @@ func (s *KeeperTestSuite) SetupTest() {
 
 func (s *KeeperTestSuite) SetupTestWithLevelDb() {
 	s.App, s.cleanup = app.SetupTestingAppWithLevelDb(false)
-	s.Ctx = s.App.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: "osmosis-1", Time: time.Now().UTC()})
+	s.Ctx = s.App.BaseApp.NewContextLegacy(false, tmproto.Header{Height: 1, ChainID: osmoconstants.MainnetChainID, Time: time.Now().UTC()})
 }
 
 func (s *KeeperTestSuite) Cleanup() {

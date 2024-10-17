@@ -28,6 +28,7 @@ import (
 	"github.com/osmosis-labs/osmosis/osmomath"
 	"github.com/osmosis-labs/osmosis/v26/app/params"
 	v23 "github.com/osmosis-labs/osmosis/v26/app/upgrades/v23" // should be automated to be updated to current version every upgrade
+	osmoconstants "github.com/osmosis-labs/osmosis/v26/constants"
 	"github.com/osmosis-labs/osmosis/v26/ingest/indexer"
 	"github.com/osmosis-labs/osmosis/v26/ingest/sqs"
 
@@ -51,9 +52,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
-	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -75,6 +74,11 @@ import (
 	"github.com/joho/godotenv"
 
 	osmosis "github.com/osmosis-labs/osmosis/v26/app"
+
+	evmosclient "github.com/evmos/os/client"
+	evmosdebugcmd "github.com/evmos/os/client/debug"
+	evmosserver "github.com/evmos/os/server"
+	evmosserverconfig "github.com/evmos/os/server/config"
 )
 
 type AssetList struct {
@@ -162,7 +166,7 @@ var (
 var (
 	//go:embed "osmosis-1-assetlist.json" "osmo-test-5-assetlist.json"
 	assetFS   embed.FS
-	mainnetId = "osmosis-1"
+	mainnetId = osmoconstants.MainnetChainID
 	testnetId = "osmo-test-5"
 )
 
@@ -352,10 +356,12 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithBroadcastMode(flags.BroadcastSync).
 		WithHomeDir(homeDir).
-		WithViper("OSMOSIS")
+		WithViper("OSMOSIS").
+		// evmOS specific setup to add eth_secp256k1 curve
+		WithKeyringOptions(ExtendedKeyringOption())
 
 	tempDir := tempDir()
-	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, tempDir, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID("osmosis-1"))
+	tempApp := osmosis.NewOsmosisApp(log.NewNopLogger(), cosmosdb.NewMemDB(), nil, true, map[int64]bool{}, tempDir, 5, sims.EmptyAppOptions{}, osmosis.EmptyWasmOpts, baseapp.SetChainID(osmoconstants.MainnetChainID))
 	defer func() {
 		if err := tempApp.Close(); err != nil {
 			panic(err)
@@ -659,6 +665,11 @@ func initAppConfig() (string, interface{}) {
 		OTELConfig osmosis.OTELConfig `mapstructure:"otel"`
 
 		WasmConfig wasmtypes.WasmConfig `mapstructure:"wasm"`
+
+		// evmOS configuration
+		EVM     evmosserverconfig.EVMConfig     `mapstructure:"evm"`
+		JSONRPC evmosserverconfig.JSONRPCConfig `mapstructure:"jsonrpc"`
+		TLS     evmosserverconfig.TLSConfig     `mapstructure:"tls"`
 	}
 
 	DefaultOsmosisMempoolConfig := OsmosisMempoolConfig{
@@ -684,7 +695,17 @@ func initAppConfig() (string, interface{}) {
 
 	wasmCfg := wasmtypes.DefaultWasmConfig()
 
-	OsmosisAppCfg := CustomAppConfig{Config: *srvCfg, OsmosisMempoolConfig: memCfg, SidecarQueryServerConfig: sqsCfg, IndexerConfig: indexCfg, WasmConfig: wasmCfg}
+	OsmosisAppCfg := CustomAppConfig{
+		Config:                   *srvCfg,
+		OsmosisMempoolConfig:     memCfg,
+		SidecarQueryServerConfig: sqsCfg,
+		IndexerConfig:            indexCfg,
+		WasmConfig:               wasmCfg,
+		// using the evmOS default configuration
+		EVM:     *evmosserverconfig.DefaultEVMConfig(),
+		JSONRPC: *evmosserverconfig.DefaultJSONRPCConfig(),
+		TLS:     *evmosserverconfig.DefaultTLSConfig(),
+	}
 
 	OsmosisAppTemplate := serverconfig.DefaultConfigTemplate + `
 ###############################################################################
@@ -769,7 +790,8 @@ service-name = "{{ .OTELConfig.ServiceName }}"
 ###############################################################################
 ###                            Wasm Configuration                           ###
 ###############################################################################
-` + wasmtypes.DefaultConfigTemplate()
+` + wasmtypes.DefaultConfigTemplate() +
+		evmosserverconfig.DefaultEVMConfigTemplate
 
 	return OsmosisAppTemplate, OsmosisAppCfg
 }
@@ -779,7 +801,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
-	debugCmd := debug.Cmd()
+	debugCmd := evmosdebugcmd.Cmd()
 	debugCmd.AddCommand(ConvertBech32Cmd())
 	debugCmd.AddCommand(DebugProtoMarshalledBytes())
 
@@ -808,7 +830,10 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 		pruning.Cmd(newApp, osmosis.DefaultNodeHome),
 	)
 
-	server.AddCommands(rootCmd, osmosis.DefaultNodeHome, newApp, createOsmosisAppAndExport, addModuleInitFlags)
+	// NOTE: using the evmOS server commands here, which extend the Cosmos SDK by starting the JSON-RPC server
+	startOptions := evmosserver.NewDefaultStartOptions(newApp, osmosis.DefaultNodeHome)
+	evmosserver.AddCommands(rootCmd, startOptions, createOsmosisAppAndExport, addModuleInitFlags)
+
 	server.AddTestnetCreatorCommand(rootCmd, newTestnetApp, addModuleInitFlags)
 
 	for i, cmd := range rootCmd.Commands() {
@@ -851,8 +876,14 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig, t
 		server.StatusCommand(),
 		queryCommand(),
 		txCommand(tempApp.ModuleBasics),
-		keys.Commands(),
 	)
+
+	// add keys commands from evmOS which enhance the SDK keys commands to be able to support Eth keys
+	rootCmd.AddCommand(
+		// NOTE: passing `false` here to default to standard Cosmos keys with the option of adding Eth keys
+		evmosclient.KeyCommands(osmosis.DefaultNodeHome, false),
+	)
+
 	rootCmd.AddCommand(CmdListQueries(rootCmd))
 	// add rosetta
 	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))

@@ -1,12 +1,16 @@
 package app
 
 import (
+	"slices"
 	"strings"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	evmosutils "github.com/evmos/os/utils"
+	"github.com/evmos/os/x/evm/core/vm"
+	evmtypes "github.com/evmos/os/x/evm/types"
 )
 
-// BlockedAddrs returns all the app's module account addresses that are not
+// BlockedAddrs returns all the app's addresses that are not
 // allowed to receive external tokens.
 func (app *OsmosisApp) BlockedAddrs() map[string]bool {
 	blockedAddrs := make(map[string]bool)
@@ -45,6 +49,18 @@ func (app *OsmosisApp) BlockedAddrs() map[string]bool {
 	for _, addr := range ofacRawEthAddrs {
 		blockedAddrs[addr] = true
 		blockedAddrs[strings.ToLower(addr)] = true
+	}
+
+	// evmOS EVM extensions and Go-Ethereum precompiles
+	//
+	// TODO (@MalteHerrmann): check if the conversion to bech32 is required as there are hex values passed above?
+	blockedPrecompilesHex := slices.Clone(evmtypes.AvailableStaticPrecompiles)
+	for _, addr := range vm.PrecompiledAddressesBerlin {
+		blockedPrecompilesHex = append(blockedPrecompilesHex, addr.Hex())
+	}
+
+	for _, precompile := range blockedPrecompilesHex {
+		blockedAddrs[evmosutils.EthHexToCosmosAddr(precompile).String()] = true
 	}
 
 	return blockedAddrs
